@@ -47,6 +47,21 @@
 
 }
 
+/* Dark theme variable overrides - applied when body has .cyber-theme */
+.cyber-theme {
+    --primary-color: #06b6d4;        /* Cyan accent */
+    --primary-hover: #0891b2;
+    --secondary-color: #9aa6b2;
+    --accent-color: #10b981;
+    --text-primary: #e6f0ff;        /* Light text for dark bg */
+    --text-secondary: #a9bbca;
+    --text-light: #bfcfe0;
+    --background-primary: #071226;   /* Very dark navy */
+    --background-secondary: #081827; /* Slightly lighter */
+    --background-accent: #071827;
+    --border-color: rgba(255,255,255,0.06);
+}
+
 /* Responsive: stack beyond-cards and tighten spacing for prompt generator */
 @media (max-width: 900px) {
     .beyond-cards {
@@ -300,6 +315,57 @@ section h2 {
 
 .mt-6 { margin-top: 1.5rem; }
 .card { background: var(--background-secondary); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color); }
+
+/* Overrides to ensure toggle visibility and responsive stacking */
+.theme-toggle { z-index: 9999; display:flex !important; opacity:1 !important; }
+nav { overflow: visible; }
+
+/* Ensure nav-controls and toggle sit above hero graphics and remain visible */
+.nav-controls { position: relative; z-index: 9999; }
+.theme-toggle { box-shadow: 0 6px 18px rgba(2,6,23,0.35); backdrop-filter: blur(4px); }
+
+/* When in dark theme ensure the toggle contrast is high */
+.cyber-theme .theme-toggle { background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.04)); color: #fff; }
+.cyber-theme .theme-toggle .theme-icon { filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6)); }
+
+/* Make sure icons can't be clipped */
+.theme-toggle .theme-icon { position: relative; }
+
+/* Make toggle backgrounds slightly stronger so it remains visible on dark backgrounds */
+.light-theme .theme-toggle { background: rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.12); }
+.cyber-theme .theme-toggle { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.18); }
+
+/* Force stacking of beyond-cards on small screens (placed last to override earlier definitions) */
+@media (max-width: 900px) {
+    .beyond-cards { display: grid !important; grid-template-columns: 1fr !important; grid-auto-flow: row; gap: 1.25rem; }
+    .beyond-card { padding: 1rem; }
+}
+
+/* Extra small screens: reduce left column and stack nicely */
+@media (max-width: 480px) {
+    .beyond-cards { padding: 0 0.5rem; }
+    .hero-title { font-size: 1.4rem; }
+}
+
+/* Strong dark-mode overrides: use variables declared in .cyber-theme and apply important flags
+   This helps override any explicit color rules elsewhere in the stylesheet so toggling works */
+body.cyber-theme {
+    background: var(--background-primary) !important;
+    color: var(--text-primary) !important;
+}
+body.cyber-theme header, body.cyber-theme nav { background: transparent !important; }
+body.cyber-theme .nav-logo { color: var(--text-primary) !important; }
+body.cyber-theme .nav-link { color: var(--text-secondary) !important; }
+body.cyber-theme .hero-title, body.cyber-theme .hero-description, body.cyber-theme .hero-badge { color: var(--text-primary) !important; }
+body.cyber-theme .beyond-card { background: var(--background-primary) !important; color: var(--text-primary) !important; border-color: var(--border-color) !important; }
+body.cyber-theme .beyond-card.right { background: linear-gradient(180deg, #071226 0%, #081827 100%) !important; color: var(--text-primary) !important; }
+body.cyber-theme .card, body.cyber-theme .card-title, body.cyber-theme .card-description { background: transparent !important; color: var(--text-primary) !important; }
+body.cyber-theme .form-input, body.cyber-theme .form-select, body.cyber-theme .form-textarea { background: rgba(255,255,255,0.03) !important; border: 1px solid rgba(255,255,255,0.06) !important; color: var(--text-primary) !important; }
+body.cyber-theme .button-full, body.cyber-theme .btn-primary { background: var(--primary-color) !important; color: #fff !important; }
+body.cyber-theme a { color: var(--primary-color) !important; }
+
+/* Ensure theme icons are visible */
+body.cyber-theme .theme-toggle { color: var(--text-primary) !important; }
 
 /* Why section - statistics cards */
 .why-section {
