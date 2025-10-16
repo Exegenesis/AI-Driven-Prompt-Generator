@@ -9,7 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.9/babel.min.js"></script>
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="light-theme">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🔧</text></svg>">
   <header>
     <nav class="light-nav">
@@ -42,141 +42,170 @@
             </div>
           </div>
 
-          <div class="hero-figure">
-            <!-- React app root will render form inside this card -->
-            <div id="root"></div>
-          </div>
+          <!-- hero-figure removed; form will be placed in a dedicated section below -->
         </div>
+      </div>
+    </section>
+    
+    <!-- Beyond Software style section for form + framework explanation -->
+    <section class="light-beyond-software">
+      <div class="container">
+        <div class="beyond-header">
+          <h2 class="beyond-title">Framework Helper — explanations and examples</h2>
+        </div>
+        <div class="beyond-cards" id="root"></div>
       </div>
     </section>
   </main>
   <script type="text/babel">
-    function App() {
+    function App(){
+      const frameworks = {
+        'R.C.C.O': {
+          title: 'R.C.C.O',
+          desc: 'R.C.C.O is a simple framework: Role, Context, Constraints, Output — useful for many content tasks.',
+          exampleInput: 'Role: Content writer; Context: Blog post about artisanal cheese; Constraints: 700 words, friendly tone; Output: SEO-optimised blog post outline.'
+        },
+        'C.A.R.E': {
+          title: 'C.A.R.E',
+          desc: 'C.A.R.E focuses on Context, Action, Result, Example — good for marketing and copy tasks.',
+          exampleInput: 'Context: Launching a new product; Action: Write a social post; Result: High engagement; Example: Short punchy post with CTA.'
+        },
+        'T.A.S.K': {
+          title: 'T.A.S.K',
+          desc: 'T.A.S.K breaks the job into Task, Action, Style, Knowledge for detailed instructions.',
+          exampleInput: 'Task: Summarize technical report; Action: Extract key findings; Style: Executive summary; Knowledge: Network security basics.'
+        }
+      };
+
       const [formData, setFormData] = React.useState({
-        goal: '',
-        audience: '',
-        framework: 'R.C.C.O',
-        aiModel: 'GPT-4',
-        context: '',
-        action: '',
-        result: '',
-        example: '',
-        task: '',
-        style: '',
-        knowledge: ''
+        framework: 'R.C.C.O', aiModel: 'GPT-4', goal:'', audience:'', context:'', action:'', result:'', example:'', task:'', style:'', knowledge:'',
+        outputType: '', tone: '', length: '', constraints: '', role: ''
       });
+
+      const [advancedOpen, setAdvancedOpen] = React.useState(false);
+
       const [prompt, setPrompt] = React.useState('');
 
       const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const {name, value} = e.target;
+        setFormData(prev => ({...prev, [name]: value}));
       };
 
       const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-          const response = await fetch('/api/generate-prompt', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData),
-          });
+        try{
+          const response = await fetch('/api/generate-prompt', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(formData)});
           const data = await response.json();
-          if (data.error) {
-            alert('Error generating prompt: ' + data.error);
-            return;
-          }
-          setPrompt(data.prompt);
-        } catch (error) {
-          alert('Network error: ' + error.message);
-        }
+          if(data.error) { alert('Error: '+data.error); return; }
+          setPrompt(data.prompt || JSON.stringify(data));
+        }catch(err){ alert('Network error: '+err.message); }
       };
 
+      const activeFramework = frameworks[formData.framework] || frameworks['R.C.C.O'];
+
       return (
-        <div className="card">
-          <form onSubmit={handleSubmit} className="cyber-form">
-            <div className="form-group">
-              <label className="form-label">Framework</label>
-              <select name="framework" value={formData.framework} onChange={handleChange} className="form-select">
-                <option>R.C.C.O</option>
-                <option>C.A.R.E</option>
-                <option>T.A.S.K</option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">AI Model</label>
-              <select name="aiModel" value={formData.aiModel} onChange={handleChange} className="form-select">
-                <option>GPT-4</option>
-                <option>Claude</option>
-                <option>Llama</option>
-              </select>
-            </div>
-
-            {formData.framework === 'R.C.C.O' && (
-              <>
-                <div className="form-group">
-                  <label className="form-label">Goal</label>
-                  <input type="text" name="goal" value={formData.goal} onChange={handleChange} className="form-input" placeholder="e.g., Write a blog post" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Audience</label>
-                  <input type="text" name="audience" value={formData.audience} onChange={handleChange} className="form-input" placeholder="e.g., Small business owners" />
-                </div>
-              </>
-            )}
-
-            {formData.framework === 'C.A.R.E' && (
-              <>
-                <div className="form-group">
-                  <label className="form-label">Context</label>
-                  <input type="text" name="context" value={formData.context} onChange={handleChange} className="form-input" placeholder="e.g., Marketing for a startup" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Action</label>
-                  <input type="text" name="action" value={formData.action} onChange={handleChange} className="form-input" placeholder="e.g., Create a social media post" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Result</label>
-                  <input type="text" name="result" value={formData.result} onChange={handleChange} className="form-input" placeholder="e.g., Engaging and concise content" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Example</label>
-                  <textarea name="example" value={formData.example} onChange={handleChange} className="form-textarea" placeholder="e.g., A short, punchy post with a call-to-action" rows="4" />
-                </div>
-              </>
-            )}
-
-            {formData.framework === 'T.A.S.K' && (
-              <>
-                <div className="form-group">
-                  <label className="form-label">Task</label>
-                  <input type="text" name="task" value={formData.task} onChange={handleChange} className="form-input" placeholder="e.g., Summarize a report" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Action</label>
-                  <input type="text" name="action" value={formData.action} onChange={handleChange} className="form-input" placeholder="e.g., Analyze and condense" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Style</label>
-                  <input type="text" name="style" value={formData.style} onChange={handleChange} className="form-input" placeholder="e.g., Professional and concise" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Knowledge</label>
-                  <textarea name="knowledge" value={formData.knowledge} onChange={handleChange} className="form-textarea" placeholder="e.g., Background in cybersecurity trends" rows="4" />
-                </div>
-              </>
-            )}
-
-            <div className="form-group">
-              <button type="submit" className="button-full">Generate Prompt</button>
-            </div>
-
-            {prompt && (
-              <div className="mt-6 card">
-                <h2 className="section-title">Generated Prompt</h2>
-                <p className="whitespace-pre-wrap">{prompt}</p>
+        <div className="beyond-cards">
+          <div className="beyond-card">
+            <h3 className="card-title">Prompt Builder</h3>
+            <form onSubmit={handleSubmit} className="cyber-form">
+              <div className="form-group">
+                <label className="form-label">Framework</label>
+                <select name="framework" value={formData.framework} onChange={handleChange} className="form-select">
+                  <option>R.C.C.O</option>
+                  <option>C.A.R.E</option>
+                  <option>T.A.S.K</option>
+                </select>
               </div>
-            )}
-          </form>
+
+
+              <div className="form-group">
+                <label className="form-label">AI Model</label>
+                <select name="aiModel" value={formData.aiModel} onChange={handleChange} className="form-select">
+                  <option>GPT-4</option>
+                  <option>Claude</option>
+                  <option>Llama</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Output Type</label>
+                <select name="outputType" value={formData.outputType} onChange={handleChange} className="form-select">
+                  <option value="">Auto</option>
+                  <option>Short answer</option>
+                  <option>Bulleted list</option>
+                  <option>Step-by-step</option>
+                  <option>Long-form</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Tone / Style</label>
+                <input name="tone" value={formData.tone} onChange={handleChange} className="form-input" placeholder="e.g., professional, casual" />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Length</label>
+                <select name="length" value={formData.length} onChange={handleChange} className="form-select">
+                  <option value="">Auto</option>
+                  <option>Short</option>
+                  <option>Medium</option>
+                  <option>Long</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <button type="button" className="button-outline" onClick={() => setAdvancedOpen(prev => !prev)}>{advancedOpen ? 'Hide advanced' : 'Advanced options'}</button>
+              </div>
+
+              {advancedOpen && (
+                <div className="advanced-panel">
+                  <div className="form-group"><label className="form-label">Role</label><input name="role" value={formData.role} onChange={handleChange} className="form-input"/></div>
+                  <div className="form-group"><label className="form-label">Constraints</label><textarea name="constraints" value={formData.constraints} onChange={handleChange} className="form-textarea" rows="3"/></div>
+                  <div className="form-group"><label className="form-label">Example</label><textarea name="example" value={formData.example} onChange={handleChange} className="form-textarea" rows="3"/></div>
+                </div>
+              )}
+
+              {formData.framework === 'R.C.C.O' && (
+                <>
+                  <div className="form-group"><label className="form-label">Goal</label><input name="goal" value={formData.goal} onChange={handleChange} className="form-input"/></div>
+                  <div className="form-group"><label className="form-label">Audience</label><input name="audience" value={formData.audience} onChange={handleChange} className="form-input"/></div>
+                </>
+              )}
+
+              {formData.framework === 'C.A.R.E' && (
+                <>
+                  <div className="form-group"><label className="form-label">Context</label><input name="context" value={formData.context} onChange={handleChange} className="form-input"/></div>
+                  <div className="form-group"><label className="form-label">Action</label><input name="action" value={formData.action} onChange={handleChange} className="form-input"/></div>
+                  <div className="form-group"><label className="form-label">Result</label><input name="result" value={formData.result} onChange={handleChange} className="form-input"/></div>
+                  <div className="form-group"><label className="form-label">Example</label><textarea name="example" value={formData.example} onChange={handleChange} className="form-textarea" rows="3"/></div>
+                </>
+              )}
+
+              {formData.framework === 'T.A.S.K' && (
+                <>
+                  <div className="form-group"><label className="form-label">Task</label><input name="task" value={formData.task} onChange={handleChange} className="form-input"/></div>
+                  <div className="form-group"><label className="form-label">Action</label><input name="action" value={formData.action} onChange={handleChange} className="form-input"/></div>
+                  <div className="form-group"><label className="form-label">Style</label><input name="style" value={formData.style} onChange={handleChange} className="form-input"/></div>
+                  <div className="form-group"><label className="form-label">Knowledge</label><textarea name="knowledge" value={formData.knowledge} onChange={handleChange} className="form-textarea" rows="3"/></div>
+                </>
+              )}
+
+              <div className="form-group"><button className="button-full" type="submit">Generate Prompt</button></div>
+
+              {prompt && (
+                <div className="mt-6 card"><h4 className="card-title">Generated Prompt</h4><pre className="whitespace-pre-wrap">{prompt}</pre></div>
+              )}
+            </form>
+          </div>
+
+          <div className="beyond-card">
+            <h3 className="card-title">Framework Explanation</h3>
+            <p className="card-description"><strong>{activeFramework.title}</strong> — {activeFramework.desc}</p>
+            <div style={{marginTop:'1rem'}}>
+              <h4 className="card-title">Example Input</h4>
+              <p className="card-description">{activeFramework.exampleInput}</p>
+            </div>
+          </div>
         </div>
       );
     }

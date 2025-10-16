@@ -6,6 +6,18 @@ document.addEventListener('DOMContentLoaded', function() {
     function setTheme(theme){
         document.body.classList.remove('cyber-theme','light-theme');
         document.body.classList.add(theme);
+        // Update nav class to match theme (light-nav or cyber-nav)
+        const nav = document.querySelector('nav');
+        if(nav){
+            nav.classList.remove('cyber-nav','light-nav');
+            nav.classList.add(theme === 'light-theme' ? 'light-nav' : 'cyber-nav');
+        }
+        // Update main class to match theme
+        const main = document.querySelector('main');
+        if(main){
+            main.classList.remove('cyber-main','light-main');
+            main.classList.add(theme === 'light-theme' ? 'light-main' : 'cyber-main');
+        }
         localStorage.setItem(themeKey, theme);
     }
 
