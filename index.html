@@ -7,11 +7,49 @@
   <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.9/babel.min.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🔧</text></svg>">
-  <div id="root"></div>
+  <header>
+    <nav class="light-nav">
+      <div class="nav-container">
+        <a href="index.html" class="nav-logo">AI Prompt</a>
+        <ul class="nav-menu">
+          <li><a class="nav-link" href="#">Home</a></li>
+          <li><a class="nav-link" href="#">Docs</a></li>
+        </ul>
+        <div class="nav-controls">
+          <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme" title="Toggle theme">
+            <svg class="theme-icon sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8M12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z"/></svg>
+            <svg class="theme-icon moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.75,4.09L15.22,6.03L16.13,9.09L13.5,7.28L10.87,9.09L11.78,6.03L9.25,4.09L12.44,4L13.5,1L14.56,4L17.75,4.09M21.25,11L19.61,12.25L20.2,14.23L18.5,13.06L16.8,14.23L17.39,12.25L15.75,11L17.81,10.95L18.5,9L19.19,10.95L21.25,11M18.97,15.95C19.8,15.87 20.69,17.05 20.16,17.8C19.84,18.25 19.5,18.67 19.08,19.07C15.17,23 8.84,23 4.94,19.07C1.03,15.17 1.03,8.83 4.94,4.93C5.34,4.53 5.76,4.17 6.21,3.85C6.96,3.32 8.14,4.21 8.06,5.04C7.79,7.9 8.75,10.87 10.95,13.06C13.14,15.26 16.1,16.22 18.97,15.95M17.33,17.97C14.5,17.81 11.7,16.64 9.53,14.5C7.36,12.31 6.2,9.5 6.04,6.68C3.23,9.82 3.34,14.4 6.35,17.41C9.37,20.43 14,20.54 17.33,17.97Z"/></svg>
+          </button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="light-main">
+    <section class="light-hero">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-text">
+            <div class="hero-badge">PROMPT TOOL</div>
+            <h1 class="hero-title">AI Prompt <span class="highlight">Engineer</span></h1>
+            <p class="hero-description">Build high-quality prompts for different models and use-cases. Fast, reusable, and model-aware.</p>
+            <div class="hero-buttons">
+              <a class="btn-primary" href="#">Get Started</a>
+            </div>
+          </div>
+
+          <div class="hero-figure">
+            <!-- React app root will render form inside this card -->
+            <div id="root"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
   <script type="text/babel">
     function App() {
       const [formData, setFormData] = React.useState({
@@ -53,182 +91,105 @@
       };
 
       return (
-        <div className="container mx-auto p-6 bg-gray-100 min-h-screen">
-          <h1 className="text-4xl font-bold mb-6 text-center text-blue-600">AI Prompt Engineer</h1>
-          <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Framework</label>
-              <select
-                name="framework"
-                value={formData.framework}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
+        <div className="card">
+          <form onSubmit={handleSubmit} className="cyber-form">
+            <div className="form-group">
+              <label className="form-label">Framework</label>
+              <select name="framework" value={formData.framework} onChange={handleChange} className="form-select">
                 <option>R.C.C.O</option>
                 <option>C.A.R.E</option>
                 <option>T.A.S.K</option>
               </select>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">AI Model</label>
-              <select
-                name="aiModel"
-                value={formData.aiModel}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
+
+            <div className="form-group">
+              <label className="form-label">AI Model</label>
+              <select name="aiModel" value={formData.aiModel} onChange={handleChange} className="form-select">
                 <option>GPT-4</option>
                 <option>Claude</option>
                 <option>Llama</option>
               </select>
             </div>
+
             {formData.framework === 'R.C.C.O' && (
               <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Goal</label>
-                  <input
-                    type="text"
-                    name="goal"
-                    value={formData.goal}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Write a blog post"
-                  />
+                <div className="form-group">
+                  <label className="form-label">Goal</label>
+                  <input type="text" name="goal" value={formData.goal} onChange={handleChange} className="form-input" placeholder="e.g., Write a blog post" />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Audience</label>
-                  <input
-                    type="text"
-                    name="audience"
-                    value={formData.audience}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Small business owners"
-                  />
+                <div className="form-group">
+                  <label className="form-label">Audience</label>
+                  <input type="text" name="audience" value={formData.audience} onChange={handleChange} className="form-input" placeholder="e.g., Small business owners" />
                 </div>
               </>
             )}
+
             {formData.framework === 'C.A.R.E' && (
               <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Context</label>
-                  <input
-                    type="text"
-                    name="context"
-                    value={formData.context}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Marketing for a startup"
-                  />
+                <div className="form-group">
+                  <label className="form-label">Context</label>
+                  <input type="text" name="context" value={formData.context} onChange={handleChange} className="form-input" placeholder="e.g., Marketing for a startup" />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Action</label>
-                  <input
-                    type="text"
-                    name="action"
-                    value={formData.action}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Create a social media post"
-                  />
+                <div className="form-group">
+                  <label className="form-label">Action</label>
+                  <input type="text" name="action" value={formData.action} onChange={handleChange} className="form-input" placeholder="e.g., Create a social media post" />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Result</label>
-                  <input
-                    type="text"
-                    name="result"
-                    value={formData.result}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Engaging and concise content"
-                  />
+                <div className="form-group">
+                  <label className="form-label">Result</label>
+                  <input type="text" name="result" value={formData.result} onChange={handleChange} className="form-input" placeholder="e.g., Engaging and concise content" />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Example</label>
-                  <textarea
-                    name="example"
-                    value={formData.example}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., A short, punchy post with a call-to-action"
-                    rows="4"
-                  />
+                <div className="form-group">
+                  <label className="form-label">Example</label>
+                  <textarea name="example" value={formData.example} onChange={handleChange} className="form-textarea" placeholder="e.g., A short, punchy post with a call-to-action" rows="4" />
                 </div>
               </>
             )}
+
             {formData.framework === 'T.A.S.K' && (
               <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Task</label>
-                  <input
-                    type="text"
-                    name="task"
-                    value={formData.task}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Summarize a report"
-                  />
+                <div className="form-group">
+                  <label className="form-label">Task</label>
+                  <input type="text" name="task" value={formData.task} onChange={handleChange} className="form-input" placeholder="e.g., Summarize a report" />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Action</label>
-                  <input
-                    type="text"
-                    name="action"
-                    value={formData.action}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Analyze and condense"
-                  />
+                <div className="form-group">
+                  <label className="form-label">Action</label>
+                  <input type="text" name="action" value={formData.action} onChange={handleChange} className="form-input" placeholder="e.g., Analyze and condense" />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Style</label>
-                  <input
-                    type="text"
-                    name="style"
-                    value={formData.style}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Professional and concise"
-                  />
+                <div className="form-group">
+                  <label className="form-label">Style</label>
+                  <input type="text" name="style" value={formData.style} onChange={handleChange} className="form-input" placeholder="e.g., Professional and concise" />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Knowledge</label>
-                  <textarea
-                    name="knowledge"
-                    value={formData.knowledge}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Background in cybersecurity trends"
-                    rows="4"
-                  />
+                <div className="form-group">
+                  <label className="form-label">Knowledge</label>
+                  <textarea name="knowledge" value={formData.knowledge} onChange={handleChange} className="form-textarea" placeholder="e.g., Background in cybersecurity trends" rows="4" />
                 </div>
               </>
             )}
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 transition duration-200"
-            >
-              Generate Prompt
-            </button>
-          </form>
-          {prompt && (
-            <div className="mt-6 p-6 bg-white rounded-lg shadow-md max-w-2xl mx-auto">
-              <h2 className="text-xl font-semibold text-gray-800 mb-2">Generated Prompt</h2>
-              <p className="text-gray-600 whitespace-pre-wrap">{prompt}</p>
+
+            <div className="form-group">
+              <button type="submit" className="button-full">Generate Prompt</button>
             </div>
-          )}
+
+            {prompt && (
+              <div className="mt-6 card">
+                <h2 className="section-title">Generated Prompt</h2>
+                <p className="whitespace-pre-wrap">{prompt}</p>
+              </div>
+            )}
+          </form>
         </div>
       );
     }
 
-    // Use React 18 createRoot to avoid ReactDOM.render deprecation warnings
+    // Render into the #root that exists inside the hero figure
     const container = document.getElementById('root');
     if (ReactDOM.createRoot) {
       ReactDOM.createRoot(container).render(<App />);
     } else {
-      // fallback
       ReactDOM.render(<App />, container);
     }
   </script>
+
+  <script src="js/main.js"></script>
 </body>
 </html>

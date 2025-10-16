@@ -1,0 +1,73 @@
+/* Copied/adapted from the-darkness-portfolio-website css/style.css - reduced to core parts used by index.html */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root{
+    --primary-color: #2563eb;
+    --primary-hover: #1d4ed8;
+    --text-primary: #1e293b;
+    --background-primary: #ffffff;
+    --background-secondary: #f8fafc;
+    --border-radius: 0.5rem;
+    --container-max-width: 1200px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}
+body{font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;color:var(--text-primary);background:var(--background-primary)}
+.container{max-width:var(--container-max-width);margin:0 auto;padding:0 2rem}
+
+/* Nav */
+nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 0}
+.nav-logo{font-weight:700;color:var(--primary-color);text-decoration:none;font-size:1.25rem}
+.nav-menu{display:flex;gap:1rem;list-style:none}
+.nav-link{text-decoration:none;color:var(--text-primary);padding:0.5rem;border-radius:8px}
+.nav-link.active{color:var(--primary-color)}
+
+/* Theme toggle & controls */
+.nav-controls{display:flex;align-items:center;gap:0.75rem}
+.theme-toggle{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:8px;background:rgba(0,0,0,0.05);border:none;cursor:pointer}
+.theme-icon{width:20px;height:20px}
+
+/* Hero */
+.light-hero{padding:100px 0;min-height:80vh;background:linear-gradient(135deg,var(--background-primary) 0%,var(--background-secondary) 100%)}
+.hero-content{display:grid;grid-template-columns:1fr auto;gap:2.5rem;align-items:center}
+.hero-badge{display:inline-block;padding:0.5rem 1rem;border-radius:20px;background:rgba(37,99,235,0.08);color:var(--primary-color);font-weight:600;margin-bottom:1rem}
+.hero-title{font-size:2.5rem;font-weight:800;color:var(--text-primary);margin-bottom:1rem}
+.hero-title .highlight{color:var(--primary-color)}
+.hero-description{color:#374151;line-height:1.6;margin-bottom:1.5rem}
+.hero-buttons{display:flex;gap:1rem}
+.btn-primary{background:var(--primary-color);color:white;padding:0.75rem 1.25rem;border-radius:8px;text-decoration:none;font-weight:600}
+.btn-secondary{background:transparent;border:2px solid rgba(37,99,235,0.12);color:var(--text-primary);padding:0.75rem 1.25rem;border-radius:8px}
+
+/* Form card styles to integrate with hero look */
+.card{background:white;border:1px solid #e6eefb;border-radius:12px;padding:1.25rem;box-shadow:0 6px 18px rgba(16,24,40,0.06)}
+.form-input, .form-select, .form-textarea{width:100%;padding:0.6rem;border:1px solid #e6eefb;border-radius:8px}
+.form-label{display:block;margin-bottom:0.35rem;font-weight:600;color:#334155}
+.button-full{width:100%;background:var(--primary-color);color:white;padding:0.75rem;border-radius:8px;border:none}
+
+/* Sections */
+.light-beyond-software, .light-why-matters, .light-partner, .light-cta {padding:4rem 0}
+.section-title{font-size:1.75rem;font-weight:700;text-align:center;margin-bottom:1rem}
+
+/* Stats/cards */
+.stat-card{background:#fff;border:1px solid #eef2ff;border-radius:12px;padding:1rem;text-align:center}
+
+/* Footer */
+.light-footer{background:var(--text-primary);color:white;padding:2rem 0;text-align:center}
+
+/* Responsive tweaks */
+@media(max-width:768px){
+    .hero-content{grid-template-columns:1fr}
+    .hero-figure{display:none}
+    .nav-menu{display:none}
+}
+
+/* small helper spacing */
+.mt-6{margin-top:1.5rem}
+.max-w-2xl{max-width:42rem;margin-left:auto;margin-right:auto}
+.whitespace-pre-wrap{white-space:pre-wrap}
+
+/* Simple ripple style for CTA (small subset) */
+.cta-button{position:relative;overflow:hidden}
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,0.3);transform:scale(0);animation:ripple-animation 0.6s linear;pointer-events:none}
+@keyframes ripple-animation{to{transform:scale(4);opacity:0}}
