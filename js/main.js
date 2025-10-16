@@ -19,6 +19,12 @@ document.addEventListener('DOMContentLoaded', function() {
             main.classList.add(theme === 'light-theme' ? 'light-main' : 'cyber-main');
         }
         localStorage.setItem(themeKey, theme);
+        // Update toggle attributes for accessibility and clear title
+        if(themeToggle){
+            const isLight = theme === 'light-theme';
+            themeToggle.setAttribute('aria-pressed', String(!isLight));
+            themeToggle.title = isLight ? 'Switch to dark theme' : 'Switch to light theme';
+        }
     }
 
     function initTheme(){
