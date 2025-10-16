@@ -1,0 +1,19 @@
+repos:
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        name: detect-secrets
+        entry: detect-secrets-hook
+        language: python
+        stages: [commit]
+
+  - repo: local
+    hooks:
+      - id: gitleaks-local
+        name: Gitleaks (staged files)
+        entry: gitleaks detect --staged --exit-code 1
+        language: system
+        stages: [commit]
+        always_run: false
+        pass_filenames: false

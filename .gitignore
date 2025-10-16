@@ -1,0 +1,6 @@
+/.env.example.env
+.env
+# local helper binaries
+scripts/bin/
+
+.env
