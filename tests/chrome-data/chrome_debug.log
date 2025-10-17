@@ -1,5 +1,0 @@
-[16988:8440:1017/111421.363:INFO:components\enterprise\browser\controller\chrome_browser_cloud_management_controller.cc:206] No machine level policy manager exists.
-[16988:8440:1017/111422.221:INFO:CONSOLE:29850] "%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold", source: https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js (29850)
-[16988:8440:1017/111422.902:INFO:CONSOLE:1] "You are using the in-browser Babel transformer. Be sure to precompile your scripts for production - https://babeljs.io/docs/setup/", source: https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.9/babel.min.js (1)
-[19984:25056:1017/111424.851:WARNING:net\extras\sqlite\sqlite_persistent_store_backend_base.cc:176] Failed to post task from FlushAndNotifyInBackground@net\extras\sqlite\sqlite_persistent_store_backend_base.cc:226 to client_task_runner_.
-[19984:25056:1017/111424.851:WARNING:net\extras\sqlite\sqlite_persistent_store_backend_base.cc:176] Failed to post task from FlushAndNotifyInBackground@net\extras\sqlite\sqlite_persistent_store_backend_base.cc:226 to client_task_runner_.
