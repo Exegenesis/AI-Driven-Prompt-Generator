@@ -27,7 +27,8 @@
         style: '',
         knowledge: ''
       });
-      const [prompt, setPrompt] = React.useState('');
+  const [prompt, setPrompt] = React.useState('');
+  const [errorMsg, setErrorMsg] = React.useState('');
 
       const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -35,20 +36,24 @@
 
       const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrorMsg('');
         try {
           const response = await fetch('/api/generate-prompt', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData),
           });
-          const data = await response.json();
-          if (data.error) {
-            alert('Error generating prompt: ' + data.error);
+          let data;
+          try { data = await response.json(); } catch(e) { data = { __raw: await response.text() }; }
+          if (!response.ok) {
+            const msg = (data && data.error) ? data.error : (data && data.__raw) ? data.__raw : response.statusText || `HTTP ${response.status}`;
+            setErrorMsg(msg);
             return;
           }
+          if (data.error) { setErrorMsg(data.error); return; }
           setPrompt(data.prompt);
         } catch (error) {
-          alert('Network error: ' + error.message);
+          setErrorMsg('Network error: ' + (error && error.message ? error.message : String(error)));
         }
       };
 
@@ -211,6 +216,11 @@
               Generate Prompt
             </button>
           </form>
+          {errorMsg && (
+            <div className="mt-4 max-w-2xl mx-auto">
+              <div className="p-3 bg-red-50 border border-red-100 text-red-700 rounded">{errorMsg}</div>
+            </div>
+          )}
           {prompt && (
             <div className="mt-6 p-6 bg-white rounded-lg shadow-md max-w-2xl mx-auto">
               <h2 className="text-xl font-semibold text-gray-800 mb-2">Generated Prompt</h2>
