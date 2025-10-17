@@ -399,6 +399,28 @@ body.cyber-theme .form-input, body.cyber-theme .form-select, body.cyber-theme .f
 body.cyber-theme .button-full, body.cyber-theme .btn-primary { background: var(--primary-color) !important; color: #fff !important; }
 body.cyber-theme a { color: var(--primary-color) !important; }
 
+/* Ensure generated prompt and any <pre> blocks wrap and stay inside their card containers.
+   This prevents long single-line responses from overflowing the layout. */
+.beyond-card pre,
+.card pre,
+.generated-prompt,
+pre.whitespace-pre-wrap {
+    white-space: pre-wrap;       /* preserve line breaks but allow wrapping */
+    word-break: break-word;      /* break long words if necessary */
+    overflow-wrap: anywhere;     /* allow breaking at any point to avoid overflow */
+    max-width: 100%;             /* never exceed parent width */
+    display: block;
+}
+
+/* If the generated prompt becomes very long, allow the card to scroll vertically
+   while preserving the overall layout. This keeps the UI stable. */
+.generated-prompt-container {
+    max-height: 38vh;            /* reasonable limit relative to viewport */
+    overflow: auto;              /* scroll when content exceeds the max height */
+    padding-right: 0.5rem;       /* prevent scrollbar from overlapping text */
+}
+
+
 /* Ensure theme icons are visible */
 body.cyber-theme .theme-toggle { color: var(--text-primary) !important; }
 
