@@ -414,6 +414,19 @@ body.cyber-theme .theme-toggle { color: var(--text-primary) !important; }
     margin-top: var(--spacing-xl);
 }
 
+/* Steps intro: three cards explaining the quick flow */
+.steps-header { text-align:center; margin-bottom: 1rem; }
+.steps-sub { color: var(--text-secondary); margin-top: 0.5rem; }
+.steps-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-top: 1.25rem; }
+.step-card { background: var(--background-primary); border-radius: 12px; padding: 1.25rem; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); text-align:center; }
+.step-badge { width:44px; height:44px; border-radius:10px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color:#081226; display:inline-flex; align-items:center; justify-content:center; font-weight:700; margin-bottom:0.75rem; }
+.step-card h3 { font-size:1.125rem; margin-bottom:0.5rem; }
+.step-card p { color: var(--text-secondary); font-size:0.95rem; }
+
+@media (min-width: 1000px) {
+    .steps-cards { grid-template-columns: repeat(3, 1fr); max-width:900px; margin: 0 auto; }
+}
+
 .stat-card {
     background-color: var(--background-primary);
     padding: var(--spacing-xl);
