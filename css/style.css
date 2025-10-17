@@ -351,6 +351,17 @@ body.cyber-theme select option, body.cyber-theme .form-select option {
 .mt-6 { margin-top: 1.5rem; }
 .card { background: var(--background-secondary); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color); }
 
+/* Ensure generated prompt preformatted text wraps and doesn't overflow card */
+.card pre, .whitespace-pre-wrap {
+    white-space: pre-wrap; /* allow wrapping at whitespace */
+    word-break: break-word; /* break long words/URLs if needed */
+    overflow-wrap: anywhere; /* allow wrapping anywhere to avoid overflow */
+    margin: 0;
+    color: var(--text-primary);
+    font-family: inherit; /* match card font */
+    font-size: 0.95rem;
+}
+
 /* Overrides to ensure toggle visibility and responsive stacking */
 .theme-toggle { z-index: 9999; display:flex !important; opacity:1 !important; }
 nav { overflow: visible; }
