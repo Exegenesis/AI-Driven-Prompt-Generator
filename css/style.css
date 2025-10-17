@@ -431,6 +431,15 @@ pre.whitespace-pre-wrap {
     padding-right: 0.5rem;       /* prevent scrollbar from overlapping text */
 }
 
+/* Actions for generated prompt (copy/export) */
+.generated-prompt-actions { margin-bottom: 0.5rem; }
+.button-outline[aria-label] { cursor: pointer; }
+.button-outline:focus { outline: 2px solid var(--primary-color); outline-offset: 2px; }
+
+/* Small visual for copied state */
+#copyBtn { min-width: 64px; }
+
+
 
 /* Ensure theme icons are visible */
 body.cyber-theme .theme-toggle { color: var(--text-primary) !important; }
