@@ -45,6 +45,20 @@ try:
         print('Theme toggle not found or click failed:', e)
 
     # Verify form fields
+    # If advanced options button exists, click it to reveal advanced fields.
+    # Use a JS-based click on any .button-outline whose text includes 'advanced' to be robust to spacing/newlines.
+    try:
+        driver.execute_script("""
+        const buttons = Array.from(document.querySelectorAll('.button-outline'));
+        for (const b of buttons) {
+            if (b.textContent && b.textContent.toLowerCase().includes('advanced')) { b.click(); return true; }
+        }
+        return false;
+        """)
+        time.sleep(0.3)
+    except Exception as e:
+        print('Advanced click failed:', e)
+
     fields = ['outputType','tone','length','constraints','role','example']
     found = {}
     for name in fields:
