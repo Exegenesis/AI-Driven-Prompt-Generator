@@ -111,7 +111,8 @@
 
       const [advancedOpen, setAdvancedOpen] = React.useState(false);
 
-      const [prompt, setPrompt] = React.useState('');
+  const [prompt, setPrompt] = React.useState('');
+  const [errorMsg, setErrorMsg] = React.useState('');
 
       const handleChange = (e) => {
         const {name, value} = e.target;
@@ -120,12 +121,27 @@
 
       const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrorMsg('');
         try{
           const response = await fetch('/api/generate-prompt', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(formData)});
-          const data = await response.json();
-          if(data.error) { alert('Error: '+data.error); return; }
+          let data;
+          try {
+            data = await response.json();
+          } catch (e) {
+            // non-JSON response
+            const text = await response.text();
+            data = { __raw: text };
+          }
+
+          if (!response.ok) {
+            const msg = (data && data.error) ? data.error : (data && data.__raw) ? data.__raw : response.statusText || `HTTP ${response.status}`;
+            setErrorMsg(msg);
+            return;
+          }
+
+          if (data && data.error) { setErrorMsg(data.error); return; }
           setPrompt(data.prompt || JSON.stringify(data));
-        }catch(err){ alert('Network error: '+err.message); }
+        } catch(err){ setErrorMsg('Network error: '+(err && err.message ? err.message : String(err))); }
       };
 
       const activeFramework = frameworks[formData.framework] || frameworks['R.C.C.O'];
@@ -218,6 +234,10 @@
               )}
 
               <div className="form-group"><button className="button-full" type="submit">Generate Prompt</button></div>
+
+              {errorMsg && (
+                <div className="mt-4 form-error" role="alert" aria-live="assertive">{errorMsg}</div>
+              )}
 
               {prompt && (
                 <div className="mt-6 card"><h4 className="card-title">Generated Prompt</h4><pre className="whitespace-pre-wrap">{prompt}</pre></div>
