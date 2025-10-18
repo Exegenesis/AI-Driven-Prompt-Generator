@@ -27,3 +27,40 @@ def driver():
     except Exception:
         pass
     shutil.rmtree(data_dir, ignore_errors=True)
+
+
+# --- Capture server fixture for server-side capture tests ---
+import threading
+import json
+from http.server import HTTPServer, BaseHTTPRequestHandler
+
+
+class _CaptureHandler(BaseHTTPRequestHandler):
+    store = []
+
+    def do_POST(self):
+        length = int(self.headers.get('content-length', 0))
+        body = self.rfile.read(length) if length else b''
+        try:
+            parsed = json.loads(body.decode('utf-8'))
+        except Exception:
+            parsed = body.decode('utf-8')
+        _CaptureHandler.store.append({'path': self.path, 'body': parsed, 'headers': dict(self.headers)})
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.end_headers()
+        self.wfile.write(b'{"status":"ok"}')
+
+    def log_message(self, format, *args):
+        return
+
+
+@pytest.fixture(scope='session')
+def capture_server():
+    server = HTTPServer(('127.0.0.1', 0), _CaptureHandler)
+    host, port = server.server_address
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    yield f'http://{host}:{port}', _CaptureHandler.store
+    server.shutdown()
+    thread.join(timeout=1)

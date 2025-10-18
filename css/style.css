@@ -668,6 +668,34 @@ pre.whitespace-pre-wrap {
   padding-right: 0.5rem; /* prevent scrollbar from overlapping text */
 }
 
+/* Improve generated prompt inner formatting and scrolling behavior */
+.generated-prompt {
+  padding: 0.75rem;
+  background: transparent;
+  border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  white-space: pre-wrap; /* preserve newlines but wrap long lines */
+  word-break: break-word;
+  max-height: calc(38vh - 64px);
+  overflow: auto;
+  margin: 0;
+}
+
+/* Lightweight custom scrollbar for WebKit-based browsers */
+.generated-prompt::-webkit-scrollbar {
+  width: 10px;
+}
+.generated-prompt::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.02);
+  border-radius: 10px;
+}
+.generated-prompt::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.06);
+  border-radius: 10px;
+}
+
 /* Actions for generated prompt (copy/export) */
 .generated-prompt-actions {
   margin-bottom: 0.5rem;
@@ -696,6 +724,29 @@ pre.whitespace-pre-wrap {
   clip: rect(0, 0, 0, 0) !important;
   white-space: nowrap !important;
   border: 0 !important;
+}
+
+/* Toast styles for friendly error messages */
+.toast {
+  --toast-bg: rgba(17, 24, 39, 0.96);
+  --toast-fg: #ffffff;
+  font-family: var(--font-family);
+  background: var(--toast-bg);
+  color: var(--toast-fg);
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  box-shadow: 0 12px 30px rgba(2, 6, 23, 0.6);
+  max-width: 420px;
+}
+
+.toast .button-outline {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--toast-fg);
+}
+
+.toast .button-outline:hover {
+  background: rgba(255,255,255,0.04);
 }
 
 /* Field error visual styles */

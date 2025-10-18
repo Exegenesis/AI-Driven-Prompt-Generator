@@ -168,6 +168,16 @@
 
         const [prompt, setPrompt] = React.useState('');
         const [errorMsg, setErrorMsg] = React.useState('');
+  // Toast state for friendly error UI with retry
+        const [toast, setToast] = React.useState({ visible: false, message: '', onRetry: null, busy: false });
+        const toastRef = React.useRef(null);
+        React.useEffect(() => {
+          if (toast.visible && toastRef.current) {
+            try {
+              toastRef.current.focus();
+            } catch (e) {}
+          }
+        }, [toast.visible]);
 
         // Session id for anonymous prompt persistence
         const [sessionId, setSessionId] = React.useState(null);
@@ -204,44 +214,64 @@
             return;
           }
           try {
-            const response = await fetch('/api/generate-prompt', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(formData),
-            });
-            let data;
-            try {
-              data = await response.json();
-            } catch (e) {
-              // non-JSON response
-              const text = await response.text();
-              data = { __raw: text };
-            }
+            const payload = JSON.stringify(formData);
+            const doRequest = async () => {
+              const response = await fetch('/api/generate-prompt', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: payload,
+              });
+              let data;
+              try {
+                data = await response.json();
+              } catch (e) {
+                const text = await response.text();
+                data = { __raw: text };
+              }
 
-            if (!response.ok) {
-              const msg =
-                data && data.error
-                  ? data.error
-                  : data && data.__raw
-                    ? data.__raw
-                    : response.statusText || `HTTP ${response.status}`;
-              setErrorMsg(msg);
-              return;
-            }
+              if (!response.ok) {
+                const msg =
+                  data && data.error
+                    ? data.error
+                    : data && data.__raw
+                      ? data.__raw
+                      : response.statusText || `HTTP ${response.status}`;
+                // show toast with retry; onRetry will set busy state while retrying
+                setToast({
+                  visible: true,
+                  message: msg,
+                  busy: false,
+                  onRetry: async () => {
+                    setToast((prev) => ({ ...prev, busy: true }));
+                    try {
+                      await doRequest();
+                    } finally {
+                      setToast({ visible: false, message: '', onRetry: null, busy: false });
+                    }
+                  },
+                });
+                setErrorMsg(msg);
+                return;
+              }
 
-            if (data && data.error) {
-              setErrorMsg(data.error);
-              return;
-            }
-            const generated = data.prompt || JSON.stringify(data);
-            setPrompt(generated);
+              if (data && data.error) {
+                setErrorMsg(data.error);
+                return;
+              }
+              const generated = data.prompt || JSON.stringify(data);
+              setPrompt(generated);
 
-            // Auto-save if enabled
-            try {
-              if (autoSaveEnabled) await savePrompt();
-            } catch (e) {}
+              // Auto-save if enabled
+              try {
+                if (autoSaveEnabled) await savePrompt();
+              } catch (e) {}
+            };
+
+            await doRequest();
           } catch (err) {
-            setErrorMsg('Network error: ' + (err && err.message ? err.message : String(err)));
+            const msg = 'Network error: ' + (err && err.message ? err.message : String(err));
+            setToast({ visible: true, message: msg, onRetry: null });
+            setErrorMsg(msg);
           }
         };
 
@@ -610,6 +640,59 @@
                 {errorMsg && (
                   <div className="mt-4 form-error" role="alert" aria-live="assertive">
                     {errorMsg}
+                  </div>
+                )}
+
+                {/* Toast UI: visible when server returns non-200 or network error */}
+                {toast.visible && (
+                  <div
+                    ref={toastRef}
+                    role="alert"
+                    aria-live="assertive"
+                    tabIndex={0}
+                    className="toast"
+                    style={{
+                      position: 'fixed',
+                      right: '1rem',
+                      bottom: '1rem',
+                      background: 'var(--card-bg, #222)',
+                      color: 'var(--text-on-dark, #fff)',
+                      padding: '0.75rem 1rem',
+                      borderRadius: '8px',
+                      boxShadow: '0 6px 18px rgba(0,0,0,0.25)',
+                      zIndex: 9999,
+                      maxWidth: '420px',
+                    }}
+                    onKeyDown={(ev) => {
+                      if (ev.key === 'Escape') setToast({ visible: false, message: '', onRetry: null, busy: false });
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <div style={{ flex: 1 }}>
+                        <strong style={{ display: 'block', marginBottom: '0.25rem' }}>Error</strong>
+                        <div style={{ fontSize: '0.9rem' }}>{toast.message}</div>
+                      </div>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        {toast.onRetry && (
+                          <button
+                            className="button-outline"
+                            onClick={async () => {
+                              if (toast.onRetry) await toast.onRetry();
+                            }}
+                            disabled={!!toast.busy}
+                            aria-disabled={!!toast.busy}
+                          >
+                            {toast.busy ? 'Retrying...' : 'Retry'}
+                          </button>
+                        )}
+                        <button
+                          className="button-outline"
+                          onClick={() => setToast({ visible: false, message: '', onRetry: null, busy: false })}
+                        >
+                          Dismiss
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 )}
 

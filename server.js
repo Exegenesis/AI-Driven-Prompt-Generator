@@ -109,17 +109,43 @@ async function refineWithOpenAI(rawPrompt, aiModel) {
         : 'gpt-5-nano';
 
     console.log('Calling OpenAI Responses API', { model });
-    // Use a minimal set of parameters to support models with restricted parameter sets (eg gpt-5-nano)
-    const resp = await client.responses.create({
-      model,
-      input: [
-        { role: 'developer', content: 'Act as an expert Prompt Engineer' },
-        {
-          role: 'user',
-          content: `Refine this prompt for clarity, structure, and effectiveness:\n\n${rawPrompt}`,
-        },
-      ],
-    });
+
+    // Retry/backoff wrapper for transient errors (429, 5xx)
+    const callWithRetries = async (retries = 3, baseDelayMs = 500) => {
+      let attempt = 0;
+      while (attempt < retries) {
+        try {
+          const resp = await client.responses.create({
+            model,
+            input: [
+              { role: 'developer', content: 'Act as an expert Prompt Engineer' },
+              {
+                role: 'user',
+                content: `Refine this prompt for clarity, structure, and effectiveness:\n\n${rawPrompt}`,
+              },
+            ],
+          });
+          return resp;
+        } catch (err) {
+          attempt += 1;
+          const status = err && err.status ? err.status : err && err.code ? err.code : null;
+          // If it's a transient server error or rate limit, retry; otherwise throw
+          const retryable =
+            (status && (status === 429 || (status >= 500 && status < 600))) ||
+            (err && err.code && err.code === 'ECONNRESET');
+          console.warn(
+            `OpenAI call attempt ${attempt} failed${retryable ? ', will retry' : ''}:`,
+            err && err.message ? err.message : err
+          );
+          if (!retryable || attempt >= retries) throw err;
+          const delay = Math.pow(2, attempt - 1) * baseDelayMs + Math.floor(Math.random() * 100);
+          await new Promise((r) => setTimeout(r, delay));
+        }
+      }
+    };
+
+    const resp = await callWithRetries(3, 500);
+
     console.log('OpenAI response received — keys:', Object.keys(resp).slice(0, 6));
     // The SDK may return `resp.output` with an array of content; fallback to output_text
     if (resp.output && resp.output.length) {
@@ -140,13 +166,21 @@ async function refineWithOpenAI(rawPrompt, aiModel) {
     console.warn('OpenAI response did not include text; returning raw prompt');
     return { success: true, text: rawPrompt };
   } catch (err) {
+    // Determine if we should show full error details to the client
+    const showDetails =
+      process.env.SHOW_ERROR_DETAILS === 'true' || process.env.NODE_ENV !== 'production';
     console.warn(
-      'OpenAI Responses API failed — returning raw prompt. Error summary:',
-      err.message || err
+      'OpenAI Responses API failed after retries — returning raw prompt. Error summary:',
+      err && err.message ? err.message : err
     );
-    if (err.response)
+    if (err && err.response)
       console.warn('OpenAI SDK error response keys:', Object.keys(err.response).slice(0, 6));
-    return { success: false, text: rawPrompt, error: err.message || String(err) };
+    const errorMessage = showDetails
+      ? err && err.message
+        ? err.message
+        : String(err)
+      : 'Upstream service error';
+    return { success: false, text: rawPrompt, error: errorMessage };
   }
 }
 
