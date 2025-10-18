@@ -431,6 +431,28 @@ pre.whitespace-pre-wrap {
     padding-right: 0.5rem;       /* prevent scrollbar from overlapping text */
 }
 
+/* Actions for generated prompt (copy/export) */
+.generated-prompt-actions { margin-bottom: 0.5rem; }
+.button-outline[aria-label] { cursor: pointer; }
+.button-outline:focus { outline: 2px solid var(--primary-color); outline-offset: 2px; }
+
+/* Small visual for copied state */
+#copyBtn { min-width: 64px; }
+
+/* Screen-reader only helper */
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+
 
 /* Ensure theme icons are visible */
 body.cyber-theme .theme-toggle { color: var(--text-primary) !important; }
