@@ -13,3 +13,4 @@ __pycache__/
 scripts/bin/
 
 .env
+node_modules
