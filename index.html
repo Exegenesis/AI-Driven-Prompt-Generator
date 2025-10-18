@@ -1,450 +1,855 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Prompt Engineer</title>
-  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.9/babel.min.js"></script>
-  <link rel="stylesheet" href="/design-system/css/base-theme.css">
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body class="light-theme">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🔧</text></svg>">
-  <header>
-    <nav class="light-nav">
-      <div class="nav-container">
-        <a href="index.html" class="nav-logo">Exegesis</a>
-        <ul class="nav-menu">
-          <li><a class="nav-link" href="#">Home</a></li>
-          <li><a class="nav-link" href="#">Docs</a></li>
-        </ul>
-        <div class="nav-controls">
-          <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme" title="Toggle theme">
-            <svg class="theme-icon sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8M12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z"/></svg>
-            <svg class="theme-icon moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.75,4.09L15.22,6.03L16.13,9.09L13.5,7.28L10.87,9.09L11.78,6.03L9.25,4.09L12.44,4L13.5,1L14.56,4L17.75,4.09M21.25,11L19.61,12.25L20.2,14.23L18.5,13.06L16.8,14.23L17.39,12.25L15.75,11L17.81,10.95L18.5,9L19.19,10.95L21.25,11M18.97,15.95C19.8,15.87 20.69,17.05 20.16,17.8C19.84,18.25 19.5,18.67 19.08,19.07C15.17,23 8.84,23 4.94,19.07C1.03,15.17 1.03,8.83 4.94,4.93C5.34,4.53 5.76,4.17 6.21,3.85C6.96,3.32 8.14,4.21 8.06,5.04C7.79,7.9 8.75,10.87 10.95,13.06C13.14,15.26 16.1,16.22 18.97,15.95M17.33,17.97C14.5,17.81 11.7,16.64 9.53,14.5C7.36,12.31 6.2,9.5 6.04,6.68C3.23,9.82 3.34,14.4 6.35,17.41C9.37,20.43 14,20.54 17.33,17.97Z"/></svg>
-          </button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Prompt Engineer</title>
+    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.9/babel.min.js"></script>
+    <link rel="stylesheet" href="/design-system/css/base-theme.css" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="light-theme">
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🔧</text></svg>"
+    />
+    <header>
+      <nav class="light-nav">
+        <div class="nav-container">
+          <a href="index.html" class="nav-logo">Exegesis</a>
+          <ul class="nav-menu">
+            <li><a class="nav-link" href="#">Home</a></li>
+            <li><a class="nav-link" href="#">Docs</a></li>
+          </ul>
+          <div class="nav-controls">
+            <button
+              class="theme-toggle"
+              id="themeToggle"
+              type="button"
+              aria-label="Toggle theme"
+              title="Toggle theme"
+            >
+              <svg
+                class="theme-icon sun-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  d="M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8M12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z"
+                />
+              </svg>
+              <svg
+                class="theme-icon moon-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  d="M17.75,4.09L15.22,6.03L16.13,9.09L13.5,7.28L10.87,9.09L11.78,6.03L9.25,4.09L12.44,4L13.5,1L14.56,4L17.75,4.09M21.25,11L19.61,12.25L20.2,14.23L18.5,13.06L16.8,14.23L17.39,12.25L15.75,11L17.81,10.95L18.5,9L19.19,10.95L21.25,11M18.97,15.95C19.8,15.87 20.69,17.05 20.16,17.8C19.84,18.25 19.5,18.67 19.08,19.07C15.17,23 8.84,23 4.94,19.07C1.03,15.17 1.03,8.83 4.94,4.93C5.34,4.53 5.76,4.17 6.21,3.85C6.96,3.32 8.14,4.21 8.06,5.04C7.79,7.9 8.75,10.87 10.95,13.06C13.14,15.26 16.1,16.22 18.97,15.95M17.33,17.97C14.5,17.81 11.7,16.64 9.53,14.5C7.36,12.31 6.2,9.5 6.04,6.68C3.23,9.82 3.34,14.4 6.35,17.41C9.37,20.43 14,20.54 17.33,17.97Z"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
-      </div>
-    </nav>
-  </header>
+      </nav>
+    </header>
 
-  <main class="light-main">
-    <section class="light-hero">
-      <div class="container">
-        <div class="hero-content">
-          <div class="hero-text">
-            <div class="hero-badge">PROMPT TOOL</div>
-            <h1 class="hero-title">AI Prompt <span class="highlight">Engineer</span></h1>
-            <p class="hero-description">Build high-quality prompts for different models and use-cases. Fast, reusable, and model-aware.</p>
-            <div class="hero-buttons">
-              <a class="btn-primary" href="#">Get Started</a>
+    <main class="light-main">
+      <section class="light-hero">
+        <div class="container">
+          <div class="hero-content">
+            <div class="hero-text">
+              <div class="hero-badge">PROMPT TOOL</div>
+              <h1 class="hero-title">AI Prompt <span class="highlight">Engineer</span></h1>
+              <p class="hero-description">
+                Build high-quality prompts for different models and use-cases. Fast, reusable, and
+                model-aware.
+              </p>
+              <div class="hero-buttons">
+                <a class="btn-primary" href="#">Get Started</a>
+              </div>
+            </div>
+
+            <!-- hero-figure removed; form will be placed in a dedicated section below -->
+          </div>
+        </div>
+      </section>
+
+      <!-- 3-step intro: Create your prompt in 3 simple steps -->
+      <section class="light-steps">
+        <div class="container">
+          <div class="steps-header">
+            <h2>Create your prompt in 3 simple steps</h2>
+            <p class="steps-sub">
+              Follow these quick steps to build a concise, model-aware prompt.
+            </p>
+          </div>
+          <div class="steps-cards">
+            <div class="step-card">
+              <div class="step-badge">1</div>
+              <h3>Step 1: Select Prompt Framework</h3>
+              <p>Pick the structure you want to use (R.C.C.O, C.A.R.E, T.A.S.K).</p>
+            </div>
+            <div class="step-card">
+              <div class="step-badge">2</div>
+              <h3>Step 2: Choose LLM Model</h3>
+              <p>Select the AI model best suited for the task (GPT-4, Claude, Llama).</p>
+            </div>
+            <div class="step-card">
+              <div class="step-badge">3</div>
+              <h3>Step 3: Generate Prompt</h3>
+              <p>Click Generate to create a ready-to-run prompt for your chosen model.</p>
             </div>
           </div>
+        </div>
+      </section>
 
-          <!-- hero-figure removed; form will be placed in a dedicated section below -->
-        </div>
-      </div>
-    </section>
-    
-    <!-- 3-step intro: Create your prompt in 3 simple steps -->
-    <section class="light-steps">
-      <div class="container">
-        <div class="steps-header">
-          <h2>Create your prompt in 3 simple steps</h2>
-          <p class="steps-sub">Follow these quick steps to build a concise, model-aware prompt.</p>
-        </div>
-        <div class="steps-cards">
-          <div class="step-card">
-            <div class="step-badge">1</div>
-            <h3>Step 1: Select Prompt Framework</h3>
-            <p>Pick the structure you want to use (R.C.C.O, C.A.R.E, T.A.S.K).</p>
+      <!-- Beyond Software style section for form + framework explanation -->
+      <section class="light-beyond-software">
+        <div class="container">
+          <div class="beyond-header">
+            <h2 class="beyond-title">Build Better Prompts with Frameworks</h2>
           </div>
-          <div class="step-card">
-            <div class="step-badge">2</div>
-            <h3>Step 2: Choose LLM Model</h3>
-            <p>Select the AI model best suited for the task (GPT-4, Claude, Llama).</p>
-          </div>
-          <div class="step-card">
-            <div class="step-badge">3</div>
-            <h3>Step 3: Generate Prompt</h3>
-            <p>Click Generate to create a ready-to-run prompt for your chosen model.</p>
-          </div>
+          <div class="beyond-cards" id="root"></div>
         </div>
-      </div>
-    </section>
+      </section>
+    </main>
+    <script type="text/babel">
+      function App() {
+        const frameworks = {
+          'R.C.C.O': {
+            title: 'R.C.C.O',
+            desc: 'R.C.C.O is a simple framework: Role, Context, Constraints, Output — useful for many content tasks.',
+            exampleInput:
+              'Role: Content writer; Context: Blog post about artisanal cheese; Constraints: 700 words, friendly tone; Output: SEO-optimised blog post outline.',
+          },
+          'C.A.R.E': {
+            title: 'C.A.R.E',
+            desc: 'C.A.R.E focuses on Context, Action, Result, Example — good for marketing and copy tasks.',
+            exampleInput:
+              'Context: Launching a new product; Action: Write a social post; Result: High engagement; Example: Short punchy post with CTA.',
+          },
+          'T.A.S.K': {
+            title: 'T.A.S.K',
+            desc: 'T.A.S.K breaks the job into Task, Action, Style, Knowledge for detailed instructions.',
+            exampleInput:
+              'Task: Summarize technical report; Action: Extract key findings; Style: Executive summary; Knowledge: Network security basics.',
+          },
+        };
 
-    <!-- Beyond Software style section for form + framework explanation -->
-    <section class="light-beyond-software">
-      <div class="container">
-        <div class="beyond-header">
-          <h2 class="beyond-title">Build Better Prompts with Frameworks</h2>
-        </div>
-        <div class="beyond-cards" id="root"></div>
-      </div>
-    </section>
-  </main>
-  <script type="text/babel">
-  function App(){
-      const frameworks = {
-        'R.C.C.O': {
-          title: 'R.C.C.O',
-          desc: 'R.C.C.O is a simple framework: Role, Context, Constraints, Output — useful for many content tasks.',
-          exampleInput: 'Role: Content writer; Context: Blog post about artisanal cheese; Constraints: 700 words, friendly tone; Output: SEO-optimised blog post outline.'
-        },
-        'C.A.R.E': {
-          title: 'C.A.R.E',
-          desc: 'C.A.R.E focuses on Context, Action, Result, Example — good for marketing and copy tasks.',
-          exampleInput: 'Context: Launching a new product; Action: Write a social post; Result: High engagement; Example: Short punchy post with CTA.'
-        },
-        'T.A.S.K': {
-          title: 'T.A.S.K',
-          desc: 'T.A.S.K breaks the job into Task, Action, Style, Knowledge for detailed instructions.',
-          exampleInput: 'Task: Summarize technical report; Action: Extract key findings; Style: Executive summary; Knowledge: Network security basics.'
-        }
-      };
-
-      const [formData, setFormData] = React.useState({
-        framework: 'R.C.C.O', aiModel: 'GPT-4', goal:'', audience:'', context:'', action:'', result:'', example:'', task:'', style:'', knowledge:'',
-        outputType: '', tone: '', length: '', constraints: '', role: ''
-      });
-      const [formErrors, setFormErrors] = React.useState({});
-
-      const [advancedOpen, setAdvancedOpen] = React.useState(false);
-
-    const [prompt, setPrompt] = React.useState('');
-  const [errorMsg, setErrorMsg] = React.useState('');
-
-  // Session id for anonymous prompt persistence
-  const [sessionId, setSessionId] = React.useState(null);
-  const [history, setHistory] = React.useState([]);
-  const [loadingHistory, setLoadingHistory] = React.useState(false);
-  const [autoSaveEnabled, setAutoSaveEnabled] = React.useState(true);
-
-      const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData(prev => ({...prev, [name]: value}));
-        // clear error for this field
-        setFormErrors(prev => {
-          if (!prev || !prev[name]) return prev;
-          const copy = {...prev};
-          delete copy[name];
-          return copy;
+        const [formData, setFormData] = React.useState({
+          framework: 'R.C.C.O',
+          aiModel: 'GPT-4',
+          goal: '',
+          audience: '',
+          context: '',
+          action: '',
+          result: '',
+          example: '',
+          task: '',
+          style: '',
+          knowledge: '',
+          outputType: '',
+          tone: '',
+          length: '',
+          constraints: '',
+          role: '',
         });
-      };
+        const [formErrors, setFormErrors] = React.useState({});
 
-      const handleSubmit = async (e) => {
-        e.preventDefault();
-        setErrorMsg('');
-        // client-side validation
-        const errs = {};
-        if (!formData.goal || String(formData.goal).trim() === '') errs.goal = 'Please enter a goal.';
-        if (!formData.audience || String(formData.audience).trim() === '') errs.audience = 'Please enter an audience.';
-        setFormErrors(errs);
-        if (Object.keys(errs).length > 0) {
-          const first = Object.keys(errs)[0];
-          const el = document.querySelector(`[name="${first}"]`);
-          if (el && el.focus) el.focus();
-          return;
-        }
-        try{
-          const response = await fetch('/api/generate-prompt', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(formData)});
-          let data;
-          try {
-            data = await response.json();
-          } catch (e) {
-            // non-JSON response
-            const text = await response.text();
-            data = { __raw: text };
-          }
+        const [advancedOpen, setAdvancedOpen] = React.useState(false);
 
-          if (!response.ok) {
-            const msg = (data && data.error) ? data.error : (data && data.__raw) ? data.__raw : response.statusText || `HTTP ${response.status}`;
-            setErrorMsg(msg);
+        const [prompt, setPrompt] = React.useState('');
+        const [errorMsg, setErrorMsg] = React.useState('');
+
+        // Session id for anonymous prompt persistence
+        const [sessionId, setSessionId] = React.useState(null);
+        const [history, setHistory] = React.useState([]);
+        const [loadingHistory, setLoadingHistory] = React.useState(false);
+        const [autoSaveEnabled, setAutoSaveEnabled] = React.useState(true);
+
+        const handleChange = (e) => {
+          const { name, value } = e.target;
+          setFormData((prev) => ({ ...prev, [name]: value }));
+          // clear error for this field
+          setFormErrors((prev) => {
+            if (!prev || !prev[name]) return prev;
+            const copy = { ...prev };
+            delete copy[name];
+            return copy;
+          });
+        };
+
+        const handleSubmit = async (e) => {
+          e.preventDefault();
+          setErrorMsg('');
+          // client-side validation
+          const errs = {};
+          if (!formData.goal || String(formData.goal).trim() === '')
+            errs.goal = 'Please enter a goal.';
+          if (!formData.audience || String(formData.audience).trim() === '')
+            errs.audience = 'Please enter an audience.';
+          setFormErrors(errs);
+          if (Object.keys(errs).length > 0) {
+            const first = Object.keys(errs)[0];
+            const el = document.querySelector(`[name="${first}"]`);
+            if (el && el.focus) el.focus();
             return;
           }
+          try {
+            const response = await fetch('/api/generate-prompt', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(formData),
+            });
+            let data;
+            try {
+              data = await response.json();
+            } catch (e) {
+              // non-JSON response
+              const text = await response.text();
+              data = { __raw: text };
+            }
 
-          if (data && data.error) { setErrorMsg(data.error); return; }
-          const generated = data.prompt || JSON.stringify(data);
-          setPrompt(generated);
+            if (!response.ok) {
+              const msg =
+                data && data.error
+                  ? data.error
+                  : data && data.__raw
+                    ? data.__raw
+                    : response.statusText || `HTTP ${response.status}`;
+              setErrorMsg(msg);
+              return;
+            }
 
-          // Auto-save if enabled
-          try { if (autoSaveEnabled) await savePrompt(); } catch(e){}
-        } catch(err){ setErrorMsg('Network error: '+(err && err.message ? err.message : String(err))); }
-      };
+            if (data && data.error) {
+              setErrorMsg(data.error);
+              return;
+            }
+            const generated = data.prompt || JSON.stringify(data);
+            setPrompt(generated);
 
-      const activeFramework = frameworks[formData.framework] || frameworks['R.C.C.O'];
+            // Auto-save if enabled
+            try {
+              if (autoSaveEnabled) await savePrompt();
+            } catch (e) {}
+          } catch (err) {
+            setErrorMsg('Network error: ' + (err && err.message ? err.message : String(err)));
+          }
+        };
 
-  // History helpers
-  const ensureSession = () => {
-    let sid = sessionId;
-    if (!sid) {
-      sid = localStorage.getItem('prompt_session_id');
-      if (!sid) {
-        sid = 'sess-' + (Date.now().toString(36) + Math.random().toString(36).slice(2,6));
-        localStorage.setItem('prompt_session_id', sid);
-      }
-      setSessionId(sid);
-    }
-    return sid;
-  };
+        const activeFramework = frameworks[formData.framework] || frameworks['R.C.C.O'];
 
-  const fetchHistory = async () => {
-    try {
-      setLoadingHistory(true);
-      const sid = ensureSession();
-      const resp = await fetch('/api/prompts?session=' + encodeURIComponent(sid));
-      if (!resp.ok) { setHistory([]); setLoadingHistory(false); return; }
-      const docs = await resp.json();
-      setHistory(docs || []);
-    } catch (e) { setHistory([]); } finally { setLoadingHistory(false); }
-  };
+        // History helpers
+        const ensureSession = () => {
+          let sid = sessionId;
+          if (!sid) {
+            sid = localStorage.getItem('prompt_session_id');
+            if (!sid) {
+              sid = 'sess-' + (Date.now().toString(36) + Math.random().toString(36).slice(2, 6));
+              localStorage.setItem('prompt_session_id', sid);
+            }
+            setSessionId(sid);
+          }
+          return sid;
+        };
 
-  const savePrompt = async () => {
-    if (!prompt) return;
-    try {
-      const saveBody = {
-        promptText: prompt,
-        framework: formData.framework,
-        aiModel: formData.aiModel,
-        goal: formData.goal,
-        audience: formData.audience,
-        meta: { outputType: formData.outputType, tone: formData.tone, length: formData.length }
-      };
-      const headers = { 'Content-Type':'application/json' };
-      const sid = ensureSession();
-      if (sid) headers['x-session-id'] = sid;
-      const saveResp = await fetch('/api/prompts', { method:'POST', headers, body: JSON.stringify(saveBody) });
-      if (saveResp.ok) {
-        fetchHistory();
-      } else {
-        // ignore for now
-      }
-    } catch (e) {
-      // ignore
-    }
-  };
+        const fetchHistory = async () => {
+          try {
+            setLoadingHistory(true);
+            const sid = ensureSession();
+            const resp = await fetch('/api/prompts?session=' + encodeURIComponent(sid));
+            if (!resp.ok) {
+              setHistory([]);
+              setLoadingHistory(false);
+              return;
+            }
+            const docs = await resp.json();
+            setHistory(docs || []);
+          } catch (e) {
+            setHistory([]);
+          } finally {
+            setLoadingHistory(false);
+          }
+        };
 
-  const deletePrompt = async (id) => {
-    try {
-      const sid = ensureSession();
-      const resp = await fetch('/api/prompts/' + encodeURIComponent(id) + '?session=' + encodeURIComponent(sid), { method:'DELETE' });
-      if (resp.status === 204) {
-        setHistory(prev => prev.filter(d => String(d._id || d.id) !== String(id)));
-      } else {
-        const j = await resp.json().catch(()=>({}));
-        alert(j && j.error ? j.error : 'Delete failed');
-      }
-    } catch (e) { alert('Delete failed: '+(e && e.message)); }
-  };
+        const savePrompt = async () => {
+          if (!prompt) return;
+          try {
+            const saveBody = {
+              promptText: prompt,
+              framework: formData.framework,
+              aiModel: formData.aiModel,
+              goal: formData.goal,
+              audience: formData.audience,
+              meta: {
+                outputType: formData.outputType,
+                tone: formData.tone,
+                length: formData.length,
+              },
+            };
+            const headers = { 'Content-Type': 'application/json' };
+            const sid = ensureSession();
+            if (sid) headers['x-session-id'] = sid;
+            const saveResp = await fetch('/api/prompts', {
+              method: 'POST',
+              headers,
+              body: JSON.stringify(saveBody),
+            });
+            if (saveResp.ok) {
+              fetchHistory();
+            } else {
+              // ignore for now
+            }
+          } catch (e) {
+            // ignore
+          }
+        };
 
-  const exportPrompt = (text, asMd=false) => {
-    const content = asMd ? (`# Prompt\n\n${text.replace(/`/g,'\\`')}`) : text;
-    const mime = asMd ? 'text/markdown;charset=utf-8' : 'text/plain;charset=utf-8';
-    const ext = asMd ? 'md' : 'txt';
-    const blob = new Blob([content], { type: mime });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = `prompt.${ext}`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-  };
+        const deletePrompt = async (id) => {
+          try {
+            const sid = ensureSession();
+            const resp = await fetch(
+              '/api/prompts/' + encodeURIComponent(id) + '?session=' + encodeURIComponent(sid),
+              { method: 'DELETE' }
+            );
+            if (resp.status === 204) {
+              setHistory((prev) => prev.filter((d) => String(d._id || d.id) !== String(id)));
+            } else {
+              const j = await resp.json().catch(() => ({}));
+              alert(j && j.error ? j.error : 'Delete failed');
+            }
+          } catch (e) {
+            alert('Delete failed: ' + (e && e.message));
+          }
+        };
 
-  const copyToClipboard = async (text) => {
-    try { await navigator.clipboard.writeText(text); const live = document.getElementById('copyLive'); if (live) { live.textContent = 'Copied to clipboard'; setTimeout(()=>{ live.textContent=''; },1200); } } catch(e){ alert('Copy failed'); }
-  };
+        const exportPrompt = (text, asMd = false) => {
+          const content = asMd ? `# Prompt\n\n${text.replace(/`/g, '\\`')}` : text;
+          const mime = asMd ? 'text/markdown;charset=utf-8' : 'text/plain;charset=utf-8';
+          const ext = asMd ? 'md' : 'txt';
+          const blob = new Blob([content], { type: mime });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `prompt.${ext}`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        };
 
-      return (
-        <div className="beyond-cards">
-          <div className="beyond-card right">
-            <h3 className="card-title">Prompt Builder</h3>
-            <form onSubmit={handleSubmit} className="cyber-form">
-              <div className="form-group">
-                <label className="form-label">Framework</label>
-                <select name="framework" value={formData.framework} onChange={handleChange} className="form-select">
-                  <option>R.C.C.O</option>
-                  <option>C.A.R.E</option>
-                  <option>T.A.S.K</option>
-                </select>
-              </div>
+        const copyToClipboard = async (text) => {
+          try {
+            await navigator.clipboard.writeText(text);
+            const live = document.getElementById('copyLive');
+            if (live) {
+              live.textContent = 'Copied to clipboard';
+              setTimeout(() => {
+                live.textContent = '';
+              }, 1200);
+            }
+          } catch (e) {
+            alert('Copy failed');
+          }
+        };
 
-
-              <div className="form-group">
-                <label className="form-label">AI Model</label>
-                <select name="aiModel" value={formData.aiModel} onChange={handleChange} className="form-select">
-                  <option>GPT-4</option>
-                  <option>Claude</option>
-                  <option>Llama</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Output Type</label>
-                <select name="outputType" value={formData.outputType} onChange={handleChange} className="form-select">
-                  <option value="">Auto</option>
-                  <option>Short answer</option>
-                  <option>Bulleted list</option>
-                  <option>Step-by-step</option>
-                  <option>Long-form</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Tone / Style</label>
-                <input name="tone" value={formData.tone} onChange={handleChange} className="form-input" placeholder="e.g., professional, casual" />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Length</label>
-                <select name="length" value={formData.length} onChange={handleChange} className="form-select">
-                  <option value="">Auto</option>
-                  <option>Short</option>
-                  <option>Medium</option>
-                  <option>Long</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <button type="button" className="button-outline" onClick={() => setAdvancedOpen(prev => !prev)}>{advancedOpen ? 'Hide advanced' : 'Advanced options'}</button>
-              </div>
-
-              {advancedOpen && (
-                <div className="advanced-panel">
-                  <div className="form-group"><label className="form-label">Role</label><input name="role" value={formData.role} onChange={handleChange} className="form-input"/></div>
-                  <div className="form-group"><label className="form-label">Constraints</label><textarea name="constraints" value={formData.constraints} onChange={handleChange} className="form-textarea" rows="3"/></div>
-                  <div className="form-group"><label className="form-label">Example</label><textarea name="example" value={formData.example} onChange={handleChange} className="form-textarea" rows="3"/></div>
+        return (
+          <div className="beyond-cards">
+            <div className="beyond-card right">
+              <h3 className="card-title">Prompt Builder</h3>
+              <form onSubmit={handleSubmit} className="cyber-form">
+                <div className="form-group">
+                  <label className="form-label">Framework</label>
+                  <select
+                    name="framework"
+                    value={formData.framework}
+                    onChange={handleChange}
+                    className="form-select"
+                  >
+                    <option>R.C.C.O</option>
+                    <option>C.A.R.E</option>
+                    <option>T.A.S.K</option>
+                  </select>
                 </div>
-              )}
 
-              {formData.framework === 'R.C.C.O' && (
-                <>
-                  <div className="form-group">
-                    <label className="form-label">Goal</label>
-                    <input name="goal" value={formData.goal} onChange={handleChange} className={`form-input ${formErrors.goal ? 'field-error' : ''}`} aria-invalid={!!formErrors.goal} aria-describedby={formErrors.goal ? 'err-goal' : undefined} />
-                    {formErrors.goal && <div id="err-goal" className="field-error-text" role="alert">{formErrors.goal}</div>}
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Audience</label>
-                    <input name="audience" value={formData.audience} onChange={handleChange} className={`form-input ${formErrors.audience ? 'field-error' : ''}`} aria-invalid={!!formErrors.audience} aria-describedby={formErrors.audience ? 'err-audience' : undefined} />
-                    {formErrors.audience && <div id="err-audience" className="field-error-text" role="alert">{formErrors.audience}</div>}
-                  </div>
-                </>
-              )}
+                <div className="form-group">
+                  <label className="form-label">AI Model</label>
+                  <select
+                    name="aiModel"
+                    value={formData.aiModel}
+                    onChange={handleChange}
+                    className="form-select"
+                  >
+                    <option>GPT-4</option>
+                    <option>Claude</option>
+                    <option>Llama</option>
+                  </select>
+                </div>
 
-              {formData.framework === 'C.A.R.E' && (
-                <>
-                  <div className="form-group"><label className="form-label">Context</label><input name="context" value={formData.context} onChange={handleChange} className="form-input"/></div>
-                  <div className="form-group"><label className="form-label">Action</label><input name="action" value={formData.action} onChange={handleChange} className="form-input"/></div>
-                  <div className="form-group"><label className="form-label">Result</label><input name="result" value={formData.result} onChange={handleChange} className="form-input"/></div>
-                  <div className="form-group"><label className="form-label">Example</label><textarea name="example" value={formData.example} onChange={handleChange} className="form-textarea" rows="3"/></div>
-                </>
-              )}
+                <div className="form-group">
+                  <label className="form-label">Output Type</label>
+                  <select
+                    name="outputType"
+                    value={formData.outputType}
+                    onChange={handleChange}
+                    className="form-select"
+                  >
+                    <option value="">Auto</option>
+                    <option>Short answer</option>
+                    <option>Bulleted list</option>
+                    <option>Step-by-step</option>
+                    <option>Long-form</option>
+                  </select>
+                </div>
 
-              {formData.framework === 'T.A.S.K' && (
-                <>
-                  <div className="form-group"><label className="form-label">Task</label><input name="task" value={formData.task} onChange={handleChange} className="form-input"/></div>
-                  <div className="form-group"><label className="form-label">Action</label><input name="action" value={formData.action} onChange={handleChange} className="form-input"/></div>
-                  <div className="form-group"><label className="form-label">Style</label><input name="style" value={formData.style} onChange={handleChange} className="form-input"/></div>
-                  <div className="form-group"><label className="form-label">Knowledge</label><textarea name="knowledge" value={formData.knowledge} onChange={handleChange} className="form-textarea" rows="3"/></div>
-                </>
-              )}
+                <div className="form-group">
+                  <label className="form-label">Tone / Style</label>
+                  <input
+                    name="tone"
+                    value={formData.tone}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="e.g., professional, casual"
+                  />
+                </div>
 
-              <div className="form-group"><button className="button-full" type="submit">Generate Prompt</button></div>
+                <div className="form-group">
+                  <label className="form-label">Length</label>
+                  <select
+                    name="length"
+                    value={formData.length}
+                    onChange={handleChange}
+                    className="form-select"
+                  >
+                    <option value="">Auto</option>
+                    <option>Short</option>
+                    <option>Medium</option>
+                    <option>Long</option>
+                  </select>
+                </div>
 
-              {errorMsg && (
-                <div className="mt-4 form-error" role="alert" aria-live="assertive">{errorMsg}</div>
-              )}
+                <div className="form-group">
+                  <button
+                    type="button"
+                    className="button-outline"
+                    onClick={() => setAdvancedOpen((prev) => !prev)}
+                  >
+                    {advancedOpen ? 'Hide advanced' : 'Advanced options'}
+                  </button>
+                </div>
 
-              {prompt && (
-                    <div className="mt-6 card generated-prompt-container">
-                      <h4 className="card-title">Generated Prompt</h4>
-                      <div style={{display:'flex', alignItems:'center', gap:'0.75rem', marginBottom:'0.5rem'}}>
-                        <label style={{display:'flex', alignItems:'center', gap:'0.5rem'}}><input type="checkbox" checked={autoSaveEnabled} onChange={(e)=>setAutoSaveEnabled(e.target.checked)} /> Auto-save</label>
-                        <button className="button-outline" onClick={async ()=>{ await savePrompt(); }}>Save</button>
-                      </div>
-                      <div className="generated-prompt-actions" style={{display:'flex', gap:'0.5rem', alignItems:'center'}}>
-                        <button type="button" className="button-outline" onClick={() => { navigator.clipboard.writeText(prompt); const btn = document.getElementById('copyBtn'); if (btn) { btn.textContent = 'Copied!'; setTimeout(()=>btn.textContent='Copy',1200);} const live = document.getElementById('copyLive'); if (live) { live.textContent = 'Copied to clipboard'; setTimeout(()=>{ live.textContent = ''; }, 1200);} }} id="copyBtn" aria-label="Copy generated prompt">Copy</button>
-                        <button type="button" className="button-outline" onClick={() => { const blob = new Blob([prompt], {type:'text/plain;charset=utf-8'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'prompt.txt'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }} aria-label="Download prompt as TXT">Download .txt</button>
-                        <button type="button" className="button-outline" onClick={() => { const md = `# Prompt\n\n${prompt.replace(/`/g,'\\`')}`; const blob = new Blob([md], {type:'text/markdown;charset=utf-8'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'prompt.md'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }} aria-label="Download prompt as Markdown">Download .md</button>
-                      </div>
-                      <div id="copyLive" className="sr-only" aria-live="polite" aria-atomic="true"></div>
-                      <pre className="whitespace-pre-wrap generated-prompt" id="generatedPrompt">{prompt}</pre>
+                {advancedOpen && (
+                  <div className="advanced-panel">
+                    <div className="form-group">
+                      <label className="form-label">Role</label>
+                      <input
+                        name="role"
+                        value={formData.role}
+                        onChange={handleChange}
+                        className="form-input"
+                      />
                     </div>
-                  )}
-            </form>
-          </div>
+                    <div className="form-group">
+                      <label className="form-label">Constraints</label>
+                      <textarea
+                        name="constraints"
+                        value={formData.constraints}
+                        onChange={handleChange}
+                        className="form-textarea"
+                        rows="3"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Example</label>
+                      <textarea
+                        name="example"
+                        value={formData.example}
+                        onChange={handleChange}
+                        className="form-textarea"
+                        rows="3"
+                      />
+                    </div>
+                  </div>
+                )}
 
-          <div className="beyond-card">
-            <h3 className="card-title">Framework Explanation</h3>
-            <p className="card-description"><strong>{activeFramework.title}</strong> — {activeFramework.desc}</p>
-            <div style={{marginTop:'1rem'}}>
-              <h4 className="card-title">Example Input</h4>
-              <p className="card-description">{activeFramework.exampleInput}</p>
-            </div>
-          </div>
-          
-          <div className="beyond-card" style={{minWidth:'320px'}}>
-            <h3 className="card-title">Saved Prompts</h3>
-            <div style={{marginBottom:'0.5rem'}}>
-              <button className="button-outline" type="button" onClick={fetchHistory}>Refresh</button>
-              <button className="button-outline" type="button" onClick={() => { localStorage.removeItem('prompt_session_id'); setSessionId(null); setHistory([]); }}>Reset Session</button>
-            </div>
-            <div style={{minHeight:'100px'}}>
-              {loadingHistory && <div>Loading...</div>}
-              {!loadingHistory && history.length === 0 && <div className="muted">No saved prompts yet.</div>}
-              {!loadingHistory && history.map(item => (
-                <div key={(item._id||item.id)} className="history-item" style={{borderTop:'1px solid var(--muted)', padding:'0.5rem 0'}}>
-                  <div style={{display:'flex', justifyContent:'space-between', alignItems:'baseline'}}>
-                    <div style={{fontSize:'0.9rem', fontWeight:600}}>{(item.framework||'Prompt')}</div>
-                    <div style={{fontSize:'0.85rem', color:'var(--muted)'}}>{new Date(item.createdAt).toLocaleString()}</div>
-                  </div>
-                  <pre className="whitespace-pre-wrap" style={{margin:'0.3rem 0', maxHeight:'6rem', overflow:'auto'}}>{item.promptText}</pre>
-                  <div style={{display:'flex', gap:'0.4rem', marginTop:'0.3rem'}}>
-                    <button className="button-outline" onClick={() => copyToClipboard(item.promptText)}>Copy</button>
-                    <button className="button-outline" onClick={() => exportPrompt(item.promptText,false)}>TXT</button>
-                    <button className="button-outline" onClick={() => exportPrompt(item.promptText,true)}>MD</button>
-                    <button className="button-outline" onClick={() => deletePrompt(item._id || item.id)}>Delete</button>
-                  </div>
+                {formData.framework === 'R.C.C.O' && (
+                  <>
+                    <div className="form-group">
+                      <label className="form-label">Goal</label>
+                      <input
+                        name="goal"
+                        value={formData.goal}
+                        onChange={handleChange}
+                        className={`form-input ${formErrors.goal ? 'field-error' : ''}`}
+                        aria-invalid={!!formErrors.goal}
+                        aria-describedby={formErrors.goal ? 'err-goal' : undefined}
+                      />
+                      {formErrors.goal && (
+                        <div id="err-goal" className="field-error-text" role="alert">
+                          {formErrors.goal}
+                        </div>
+                      )}
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Audience</label>
+                      <input
+                        name="audience"
+                        value={formData.audience}
+                        onChange={handleChange}
+                        className={`form-input ${formErrors.audience ? 'field-error' : ''}`}
+                        aria-invalid={!!formErrors.audience}
+                        aria-describedby={formErrors.audience ? 'err-audience' : undefined}
+                      />
+                      {formErrors.audience && (
+                        <div id="err-audience" className="field-error-text" role="alert">
+                          {formErrors.audience}
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+
+                {formData.framework === 'C.A.R.E' && (
+                  <>
+                    <div className="form-group">
+                      <label className="form-label">Context</label>
+                      <input
+                        name="context"
+                        value={formData.context}
+                        onChange={handleChange}
+                        className="form-input"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Action</label>
+                      <input
+                        name="action"
+                        value={formData.action}
+                        onChange={handleChange}
+                        className="form-input"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Result</label>
+                      <input
+                        name="result"
+                        value={formData.result}
+                        onChange={handleChange}
+                        className="form-input"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Example</label>
+                      <textarea
+                        name="example"
+                        value={formData.example}
+                        onChange={handleChange}
+                        className="form-textarea"
+                        rows="3"
+                      />
+                    </div>
+                  </>
+                )}
+
+                {formData.framework === 'T.A.S.K' && (
+                  <>
+                    <div className="form-group">
+                      <label className="form-label">Task</label>
+                      <input
+                        name="task"
+                        value={formData.task}
+                        onChange={handleChange}
+                        className="form-input"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Action</label>
+                      <input
+                        name="action"
+                        value={formData.action}
+                        onChange={handleChange}
+                        className="form-input"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Style</label>
+                      <input
+                        name="style"
+                        value={formData.style}
+                        onChange={handleChange}
+                        className="form-input"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Knowledge</label>
+                      <textarea
+                        name="knowledge"
+                        value={formData.knowledge}
+                        onChange={handleChange}
+                        className="form-textarea"
+                        rows="3"
+                      />
+                    </div>
+                  </>
+                )}
+
+                <div className="form-group">
+                  <button className="button-full" type="submit">
+                    Generate Prompt
+                  </button>
                 </div>
-              ))}
+
+                {errorMsg && (
+                  <div className="mt-4 form-error" role="alert" aria-live="assertive">
+                    {errorMsg}
+                  </div>
+                )}
+
+                {prompt && (
+                  <div className="mt-6 card generated-prompt-container">
+                    <h4 className="card-title">Generated Prompt</h4>
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        marginBottom: '0.5rem',
+                      }}
+                    >
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <input
+                          type="checkbox"
+                          checked={autoSaveEnabled}
+                          onChange={(e) => setAutoSaveEnabled(e.target.checked)}
+                        />{' '}
+                        Auto-save
+                      </label>
+                      <button
+                        className="button-outline"
+                        onClick={async () => {
+                          await savePrompt();
+                        }}
+                      >
+                        Save
+                      </button>
+                    </div>
+                    <div
+                      className="generated-prompt-actions"
+                      style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}
+                    >
+                      <button
+                        type="button"
+                        className="button-outline"
+                        onClick={() => {
+                          navigator.clipboard.writeText(prompt);
+                          const btn = document.getElementById('copyBtn');
+                          if (btn) {
+                            btn.textContent = 'Copied!';
+                            setTimeout(() => (btn.textContent = 'Copy'), 1200);
+                          }
+                          const live = document.getElementById('copyLive');
+                          if (live) {
+                            live.textContent = 'Copied to clipboard';
+                            setTimeout(() => {
+                              live.textContent = '';
+                            }, 1200);
+                          }
+                        }}
+                        id="copyBtn"
+                        aria-label="Copy generated prompt"
+                      >
+                        Copy
+                      </button>
+                      <button
+                        type="button"
+                        className="button-outline"
+                        onClick={() => {
+                          const blob = new Blob([prompt], { type: 'text/plain;charset=utf-8' });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url;
+                          a.download = 'prompt.txt';
+                          document.body.appendChild(a);
+                          a.click();
+                          a.remove();
+                          URL.revokeObjectURL(url);
+                        }}
+                        aria-label="Download prompt as TXT"
+                      >
+                        Download .txt
+                      </button>
+                      <button
+                        type="button"
+                        className="button-outline"
+                        onClick={() => {
+                          const md = `# Prompt\n\n${prompt.replace(/`/g, '\\`')}`;
+                          const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url;
+                          a.download = 'prompt.md';
+                          document.body.appendChild(a);
+                          a.click();
+                          a.remove();
+                          URL.revokeObjectURL(url);
+                        }}
+                        aria-label="Download prompt as Markdown"
+                      >
+                        Download .md
+                      </button>
+                    </div>
+                    <div
+                      id="copyLive"
+                      className="sr-only"
+                      aria-live="polite"
+                      aria-atomic="true"
+                    ></div>
+                    <pre className="whitespace-pre-wrap generated-prompt" id="generatedPrompt">
+                      {prompt}
+                    </pre>
+                  </div>
+                )}
+              </form>
+            </div>
+
+            <div className="beyond-card">
+              <h3 className="card-title">Framework Explanation</h3>
+              <p className="card-description">
+                <strong>{activeFramework.title}</strong> — {activeFramework.desc}
+              </p>
+              <div style={{ marginTop: '1rem' }}>
+                <h4 className="card-title">Example Input</h4>
+                <p className="card-description">{activeFramework.exampleInput}</p>
+              </div>
+            </div>
+
+            <div className="beyond-card" style={{ minWidth: '320px' }}>
+              <h3 className="card-title">Saved Prompts</h3>
+              <div style={{ marginBottom: '0.5rem' }}>
+                <button className="button-outline" type="button" onClick={fetchHistory}>
+                  Refresh
+                </button>
+                <button
+                  className="button-outline"
+                  type="button"
+                  onClick={() => {
+                    localStorage.removeItem('prompt_session_id');
+                    setSessionId(null);
+                    setHistory([]);
+                  }}
+                >
+                  Reset Session
+                </button>
+              </div>
+              <div style={{ minHeight: '100px' }}>
+                {loadingHistory && <div>Loading...</div>}
+                {!loadingHistory && history.length === 0 && (
+                  <div className="muted">No saved prompts yet.</div>
+                )}
+                {!loadingHistory &&
+                  history.map((item) => (
+                    <div
+                      key={item._id || item.id}
+                      className="history-item"
+                      style={{ borderTop: '1px solid var(--muted)', padding: '0.5rem 0' }}
+                    >
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'baseline',
+                        }}
+                      >
+                        <div style={{ fontSize: '0.9rem', fontWeight: 600 }}>
+                          {item.framework || 'Prompt'}
+                        </div>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>
+                          {new Date(item.createdAt).toLocaleString()}
+                        </div>
+                      </div>
+                      <pre
+                        className="whitespace-pre-wrap"
+                        style={{ margin: '0.3rem 0', maxHeight: '6rem', overflow: 'auto' }}
+                      >
+                        {item.promptText}
+                      </pre>
+                      <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.3rem' }}>
+                        <button
+                          className="button-outline"
+                          onClick={() => copyToClipboard(item.promptText)}
+                        >
+                          Copy
+                        </button>
+                        <button
+                          className="button-outline"
+                          onClick={() => exportPrompt(item.promptText, false)}
+                        >
+                          TXT
+                        </button>
+                        <button
+                          className="button-outline"
+                          onClick={() => exportPrompt(item.promptText, true)}
+                        >
+                          MD
+                        </button>
+                        <button
+                          className="button-outline"
+                          onClick={() => deletePrompt(item._id || item.id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+              </div>
             </div>
           </div>
-        </div>
-      );
-    }
+        );
+      }
 
-    // Render into the #root that exists inside the hero figure
-    const container = document.getElementById('root');
-    if (ReactDOM.createRoot) {
-      ReactDOM.createRoot(container).render(<App />);
-    } else {
-      ReactDOM.render(<App />, container);
-    }
-  </script>
+      // Render into the #root that exists inside the hero figure
+      const container = document.getElementById('root');
+      if (ReactDOM.createRoot) {
+        ReactDOM.createRoot(container).render(<App />);
+      } else {
+        ReactDOM.render(<App />, container);
+      }
+    </script>
 
-  <script src="js/main.js"></script>
-  <script>
-    (function(){
-      const toggle = document.getElementById('themeToggle');
-      if (!toggle) return;
+    <script src="js/main.js"></script>
+    <script>
+      (function () {
+        const toggle = document.getElementById('themeToggle');
+        if (!toggle) return;
 
-      const setTheme = (theme) => {
-        if (theme === 'dark') document.documentElement.setAttribute('data-theme','dark');
-        else document.documentElement.removeAttribute('data-theme');
-        // aria state
-        toggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
-      };
+        const setTheme = (theme) => {
+          if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+          else document.documentElement.removeAttribute('data-theme');
+          // aria state
+          toggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+        };
 
-      // Initialize from localStorage or prefers-color-scheme
-      const saved = localStorage.getItem('exegenesis_theme');
-      if (saved) setTheme(saved);
-      else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) setTheme('dark');
+        // Initialize from localStorage or prefers-color-scheme
+        const saved = localStorage.getItem('exegenesis_theme');
+        if (saved) setTheme(saved);
+        else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
+          setTheme('dark');
 
-      toggle.addEventListener('click', () => {
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        const next = isDark ? 'light' : 'dark';
-        setTheme(next);
-        localStorage.setItem('exegenesis_theme', next);
-      });
-    })();
-  </script>
-</body>
+        toggle.addEventListener('click', () => {
+          const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+          const next = isDark ? 'light' : 'dark';
+          setTheme(next);
+          localStorage.setItem('exegenesis_theme', next);
+        });
+      })();
+    </script>
+  </body>
 </html>

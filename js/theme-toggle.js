@@ -1,6 +1,6 @@
 // Small module to manage theme toggling for tests
 function setTheme(theme) {
-  if (theme === 'dark') document.documentElement.setAttribute('data-theme','dark');
+  if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
   else document.documentElement.removeAttribute('data-theme');
 }
 

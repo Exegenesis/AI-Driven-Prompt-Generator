@@ -1,234 +1,242 @@
-﻿<!DOCTYPE html>
+﻿<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Prompt Engineer</title>
-  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.9/babel.min.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🔧</text></svg>">
-  <div id="root"></div>
-  <script type="text/babel">
-    function App() {
-      const [formData, setFormData] = React.useState({
-        goal: '',
-        audience: '',
-        framework: 'R.C.C.O',
-        aiModel: 'GPT-4',
-        context: '',
-        action: '',
-        result: '',
-        example: '',
-        task: '',
-        style: '',
-        knowledge: ''
-      });
-      const [prompt, setPrompt] = React.useState('');
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Prompt Engineer</title>
+    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.9/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🔧</text></svg>"
+    />
+    <div id="root"></div>
+    <script type="text/babel">
+      function App() {
+        const [formData, setFormData] = React.useState({
+          goal: '',
+          audience: '',
+          framework: 'R.C.C.O',
+          aiModel: 'GPT-4',
+          context: '',
+          action: '',
+          result: '',
+          example: '',
+          task: '',
+          style: '',
+          knowledge: '',
+        });
+        const [prompt, setPrompt] = React.useState('');
 
-      const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-      };
+        const handleChange = (e) => {
+          setFormData({ ...formData, [e.target.name]: e.target.value });
+        };
 
-      const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-          const response = await fetch('/api/generate-prompt', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData),
-          });
-          const data = await response.json();
-          if (data.error) {
-            alert('Error generating prompt: ' + data.error);
-            return;
+        const handleSubmit = async (e) => {
+          e.preventDefault();
+          try {
+            const response = await fetch('/api/generate-prompt', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(formData),
+            });
+            const data = await response.json();
+            if (data.error) {
+              alert('Error generating prompt: ' + data.error);
+              return;
+            }
+            setPrompt(data.prompt);
+          } catch (error) {
+            alert('Network error: ' + error.message);
           }
-          setPrompt(data.prompt);
-        } catch (error) {
-          alert('Network error: ' + error.message);
-        }
-      };
+        };
 
-      return (
-        <div className="container mx-auto p-6 bg-gray-100 min-h-screen">
-          <h1 className="text-4xl font-bold mb-6 text-center text-blue-600">AI Prompt Engineer</h1>
-          <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Framework</label>
-              <select
-                name="framework"
-                value={formData.framework}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option>R.C.C.O</option>
-                <option>C.A.R.E</option>
-                <option>T.A.S.K</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">AI Model</label>
-              <select
-                name="aiModel"
-                value={formData.aiModel}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option>GPT-4</option>
-                <option>Claude</option>
-                <option>Llama</option>
-              </select>
-            </div>
-            {formData.framework === 'R.C.C.O' && (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Goal</label>
-                  <input
-                    type="text"
-                    name="goal"
-                    value={formData.goal}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Write a blog post"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Audience</label>
-                  <input
-                    type="text"
-                    name="audience"
-                    value={formData.audience}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Small business owners"
-                  />
-                </div>
-              </>
-            )}
-            {formData.framework === 'C.A.R.E' && (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Context</label>
-                  <input
-                    type="text"
-                    name="context"
-                    value={formData.context}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Marketing for a startup"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Action</label>
-                  <input
-                    type="text"
-                    name="action"
-                    value={formData.action}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Create a social media post"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Result</label>
-                  <input
-                    type="text"
-                    name="result"
-                    value={formData.result}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Engaging and concise content"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Example</label>
-                  <textarea
-                    name="example"
-                    value={formData.example}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., A short, punchy post with a call-to-action"
-                    rows="4"
-                  />
-                </div>
-              </>
-            )}
-            {formData.framework === 'T.A.S.K' && (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Task</label>
-                  <input
-                    type="text"
-                    name="task"
-                    value={formData.task}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Summarize a report"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Action</label>
-                  <input
-                    type="text"
-                    name="action"
-                    value={formData.action}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Analyze and condense"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Style</label>
-                  <input
-                    type="text"
-                    name="style"
-                    value={formData.style}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Professional and concise"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Knowledge</label>
-                  <textarea
-                    name="knowledge"
-                    value={formData.knowledge}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Background in cybersecurity trends"
-                    rows="4"
-                  />
-                </div>
-              </>
-            )}
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 transition duration-200"
+        return (
+          <div className="container mx-auto p-6 bg-gray-100 min-h-screen">
+            <h1 className="text-4xl font-bold mb-6 text-center text-blue-600">
+              AI Prompt Engineer
+            </h1>
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-6 bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto"
             >
-              Generate Prompt
-            </button>
-          </form>
-          {prompt && (
-            <div className="mt-6 p-6 bg-white rounded-lg shadow-md max-w-2xl mx-auto">
-              <h2 className="text-xl font-semibold text-gray-800 mb-2">Generated Prompt</h2>
-              <p className="text-gray-600 whitespace-pre-wrap">{prompt}</p>
-            </div>
-          )}
-        </div>
-      );
-    }
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Framework</label>
+                <select
+                  name="framework"
+                  value={formData.framework}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option>R.C.C.O</option>
+                  <option>C.A.R.E</option>
+                  <option>T.A.S.K</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">AI Model</label>
+                <select
+                  name="aiModel"
+                  value={formData.aiModel}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option>GPT-4</option>
+                  <option>Claude</option>
+                  <option>Llama</option>
+                </select>
+              </div>
+              {formData.framework === 'R.C.C.O' && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Goal</label>
+                    <input
+                      type="text"
+                      name="goal"
+                      value={formData.goal}
+                      onChange={handleChange}
+                      className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="e.g., Write a blog post"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Audience</label>
+                    <input
+                      type="text"
+                      name="audience"
+                      value={formData.audience}
+                      onChange={handleChange}
+                      className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="e.g., Small business owners"
+                    />
+                  </div>
+                </>
+              )}
+              {formData.framework === 'C.A.R.E' && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Context</label>
+                    <input
+                      type="text"
+                      name="context"
+                      value={formData.context}
+                      onChange={handleChange}
+                      className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="e.g., Marketing for a startup"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Action</label>
+                    <input
+                      type="text"
+                      name="action"
+                      value={formData.action}
+                      onChange={handleChange}
+                      className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="e.g., Create a social media post"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Result</label>
+                    <input
+                      type="text"
+                      name="result"
+                      value={formData.result}
+                      onChange={handleChange}
+                      className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="e.g., Engaging and concise content"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Example</label>
+                    <textarea
+                      name="example"
+                      value={formData.example}
+                      onChange={handleChange}
+                      className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="e.g., A short, punchy post with a call-to-action"
+                      rows="4"
+                    />
+                  </div>
+                </>
+              )}
+              {formData.framework === 'T.A.S.K' && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Task</label>
+                    <input
+                      type="text"
+                      name="task"
+                      value={formData.task}
+                      onChange={handleChange}
+                      className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="e.g., Summarize a report"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Action</label>
+                    <input
+                      type="text"
+                      name="action"
+                      value={formData.action}
+                      onChange={handleChange}
+                      className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="e.g., Analyze and condense"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Style</label>
+                    <input
+                      type="text"
+                      name="style"
+                      value={formData.style}
+                      onChange={handleChange}
+                      className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="e.g., Professional and concise"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Knowledge</label>
+                    <textarea
+                      name="knowledge"
+                      value={formData.knowledge}
+                      onChange={handleChange}
+                      className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="e.g., Background in cybersecurity trends"
+                      rows="4"
+                    />
+                  </div>
+                </>
+              )}
+              <button
+                type="submit"
+                className="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 transition duration-200"
+              >
+                Generate Prompt
+              </button>
+            </form>
+            {prompt && (
+              <div className="mt-6 p-6 bg-white rounded-lg shadow-md max-w-2xl mx-auto">
+                <h2 className="text-xl font-semibold text-gray-800 mb-2">Generated Prompt</h2>
+                <p className="text-gray-600 whitespace-pre-wrap">{prompt}</p>
+              </div>
+            )}
+          </div>
+        );
+      }
 
-    // Use React 18 createRoot to avoid ReactDOM.render deprecation warnings
-    const container = document.getElementById('root');
-    if (ReactDOM.createRoot) {
-      ReactDOM.createRoot(container).render(<App />);
-    } else {
-      // fallback
-      ReactDOM.render(<App />, container);
-    }
-  </script>
-</body>
+      // Use React 18 createRoot to avoid ReactDOM.render deprecation warnings
+      const container = document.getElementById('root');
+      if (ReactDOM.createRoot) {
+        ReactDOM.createRoot(container).render(<App />);
+      } else {
+        // fallback
+        ReactDOM.render(<App />, container);
+      }
+    </script>
+  </body>
 </html>

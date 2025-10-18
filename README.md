@@ -28,15 +28,16 @@ npm run dev
 4. Open `http://localhost:3000` in your browser. The provided `index.html` in the project root is a minimal frontend.
 
 Notes
+
 - If `OPENAI_API_KEY` is not set the server will return the generated prompt template and a note explaining the API key is missing.
 - MongoDB is optional for this demo; if `MONGO_URI` is provided the server will attempt to connect.
 
 Next steps
+
 - Add authentication and prompt history storage in MongoDB.
 - Add unit tests and linting.
 
-CI and tests
------------
+## CI and tests
 
 This repository uses GitHub Actions to run unit tests on pull requests and pushes to `main`.
 
@@ -47,7 +48,6 @@ npm install
 npm test
 ```
 
-Changelog (recent)
--------------------
+## Changelog (recent)
 
 - 2025-10-18: Add theme toggle, design-system, Jest unit tests and CI workflow; update lockfile to fix CI installs.

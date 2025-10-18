@@ -1,6 +1,5 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const axios = require('axios');
 const { OpenAI } = require('openai');
 const dotenv = require('dotenv');
 const path = require('path');
@@ -47,7 +46,12 @@ if (process.env.OPENAI_MODEL) {
 }
 
 // Diagnostic: print whether OpenAI key and model are configured (do not print the key itself)
-console.log('OPENAI configured:', !!process.env.OPENAI_API_KEY, 'OPENAI_MODEL:', process.env.OPENAI_MODEL || 'gpt-5-nano');
+console.log(
+  'OPENAI configured:',
+  !!process.env.OPENAI_API_KEY,
+  'OPENAI_MODEL:',
+  process.env.OPENAI_MODEL || 'gpt-5-nano'
+);
 
 // Serve static frontend (index.html in project root)
 app.use(express.static(path.join(__dirname)));
@@ -91,41 +95,58 @@ const generateTASKPrompt = ({ goal, audience, aiModel }) => {
 async function refineWithOpenAI(rawPrompt, aiModel) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
-    return `${rawPrompt} \n\n[Note: OpenAI API key not configured — returning generated template.]`;
+    return {
+      success: true,
+      text: `${rawPrompt} \n\n[Note: OpenAI API key not configured — returning generated template.]`,
+    };
   }
 
   try {
     const client = new OpenAI({ apiKey });
-    const model = (aiModel && aiModel.toLowerCase().includes('gpt')) ? (process.env.OPENAI_MODEL || 'gpt-5-nano') : 'gpt-5-nano';
+    const model =
+      aiModel && aiModel.toLowerCase().includes('gpt')
+        ? process.env.OPENAI_MODEL || 'gpt-5-nano'
+        : 'gpt-5-nano';
 
     console.log('Calling OpenAI Responses API', { model });
+    // Use a minimal set of parameters to support models with restricted parameter sets (eg gpt-5-nano)
     const resp = await client.responses.create({
       model,
       input: [
         { role: 'developer', content: 'Act as an expert Prompt Engineer' },
-        { role: 'user', content: `Refine this prompt for clarity, structure, and effectiveness:\n\n${rawPrompt}` }
+        {
+          role: 'user',
+          content: `Refine this prompt for clarity, structure, and effectiveness:\n\n${rawPrompt}`,
+        },
       ],
-      reasoning: { effort: 'low' },
-      temperature: 0.2,
-      max_output_tokens: 512
     });
-    console.log('OpenAI response received — keys:', Object.keys(resp).slice(0,6));
+    console.log('OpenAI response received — keys:', Object.keys(resp).slice(0, 6));
     // The SDK may return `resp.output` with an array of content; fallback to output_text
     if (resp.output && resp.output.length) {
-      const texts = resp.output.map(o => {
-        try {
-          return (o.type === 'message' && o.content && o.content[0] && o.content[0].text) ? o.content[0].text : '';
-        } catch (e) { return ''; }
-      }).filter(Boolean);
-      if (texts.length) return texts.join('\n').trim();
+      const texts = resp.output
+        .map((o) => {
+          try {
+            return o.type === 'message' && o.content && o.content[0] && o.content[0].text
+              ? o.content[0].text
+              : '';
+          } catch (e) {
+            return '';
+          }
+        })
+        .filter(Boolean);
+      if (texts.length) return { success: true, text: texts.join('\n').trim() };
     }
-    if (resp.output_text) return resp.output_text.trim();
+    if (resp.output_text) return { success: true, text: resp.output_text.trim() };
     console.warn('OpenAI response did not include text; returning raw prompt');
-    return rawPrompt;
+    return { success: true, text: rawPrompt };
   } catch (err) {
-    console.warn('OpenAI Responses API failed — returning raw prompt. Error summary:', err.message || err);
-    if (err.response) console.warn('OpenAI SDK error response keys:', Object.keys(err.response).slice(0,6));
-    return rawPrompt;
+    console.warn(
+      'OpenAI Responses API failed — returning raw prompt. Error summary:',
+      err.message || err
+    );
+    if (err.response)
+      console.warn('OpenAI SDK error response keys:', Object.keys(err.response).slice(0, 6));
+    return { success: false, text: rawPrompt, error: err.message || String(err) };
   }
 }
 
@@ -155,8 +176,17 @@ app.post('/api/generate-prompt', async (req, res) => {
       rawPrompt = generateRCCOPrompt({ goal, audience, aiModel });
   }
 
-  const refined = await refineWithOpenAI(rawPrompt, aiModel);
-  return res.json({ prompt: refined });
+  const refinedResult = await refineWithOpenAI(rawPrompt, aiModel);
+  if (!refinedResult || refinedResult.success === false) {
+    // OpenAI failed — return a 502 Bad Gateway so frontend can surface the failure
+    return res.status(502).json({
+      error: 'OpenAI refinement failed',
+      details: refinedResult && refinedResult.error ? refinedResult.error : 'unknown',
+      prompt: refinedResult && refinedResult.text ? refinedResult.text : rawPrompt,
+    });
+  }
+
+  return res.json({ prompt: refinedResult.text });
 });
 
 const PORT = process.env.PORT || 3000;
