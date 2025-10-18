@@ -85,7 +85,7 @@
     </section>
   </main>
   <script type="text/babel">
-    function App(){
+  function App(){
       const frameworks = {
         'R.C.C.O': {
           title: 'R.C.C.O',
@@ -111,8 +111,14 @@
 
       const [advancedOpen, setAdvancedOpen] = React.useState(false);
 
-  const [prompt, setPrompt] = React.useState('');
+    const [prompt, setPrompt] = React.useState('');
   const [errorMsg, setErrorMsg] = React.useState('');
+
+  // Session id for anonymous prompt persistence
+  const [sessionId, setSessionId] = React.useState(null);
+  const [history, setHistory] = React.useState([]);
+  const [loadingHistory, setLoadingHistory] = React.useState(false);
+  const [autoSaveEnabled, setAutoSaveEnabled] = React.useState(true);
 
       const handleChange = (e) => {
         const {name, value} = e.target;
@@ -140,11 +146,91 @@
           }
 
           if (data && data.error) { setErrorMsg(data.error); return; }
-          setPrompt(data.prompt || JSON.stringify(data));
+          const generated = data.prompt || JSON.stringify(data);
+          setPrompt(generated);
+
+          // Auto-save if enabled
+          try { if (autoSaveEnabled) await savePrompt(); } catch(e){}
         } catch(err){ setErrorMsg('Network error: '+(err && err.message ? err.message : String(err))); }
       };
 
       const activeFramework = frameworks[formData.framework] || frameworks['R.C.C.O'];
+
+  // History helpers
+  const ensureSession = () => {
+    let sid = sessionId;
+    if (!sid) {
+      sid = localStorage.getItem('prompt_session_id');
+      if (!sid) {
+        sid = 'sess-' + (Date.now().toString(36) + Math.random().toString(36).slice(2,6));
+        localStorage.setItem('prompt_session_id', sid);
+      }
+      setSessionId(sid);
+    }
+    return sid;
+  };
+
+  const fetchHistory = async () => {
+    try {
+      setLoadingHistory(true);
+      const sid = ensureSession();
+      const resp = await fetch('/api/prompts?session=' + encodeURIComponent(sid));
+      if (!resp.ok) { setHistory([]); setLoadingHistory(false); return; }
+      const docs = await resp.json();
+      setHistory(docs || []);
+    } catch (e) { setHistory([]); } finally { setLoadingHistory(false); }
+  };
+
+  const savePrompt = async () => {
+    if (!prompt) return;
+    try {
+      const saveBody = {
+        promptText: prompt,
+        framework: formData.framework,
+        aiModel: formData.aiModel,
+        goal: formData.goal,
+        audience: formData.audience,
+        meta: { outputType: formData.outputType, tone: formData.tone, length: formData.length }
+      };
+      const headers = { 'Content-Type':'application/json' };
+      const sid = ensureSession();
+      if (sid) headers['x-session-id'] = sid;
+      const saveResp = await fetch('/api/prompts', { method:'POST', headers, body: JSON.stringify(saveBody) });
+      if (saveResp.ok) {
+        fetchHistory();
+      } else {
+        // ignore for now
+      }
+    } catch (e) {
+      // ignore
+    }
+  };
+
+  const deletePrompt = async (id) => {
+    try {
+      const sid = ensureSession();
+      const resp = await fetch('/api/prompts/' + encodeURIComponent(id) + '?session=' + encodeURIComponent(sid), { method:'DELETE' });
+      if (resp.status === 204) {
+        setHistory(prev => prev.filter(d => String(d._id || d.id) !== String(id)));
+      } else {
+        const j = await resp.json().catch(()=>({}));
+        alert(j && j.error ? j.error : 'Delete failed');
+      }
+    } catch (e) { alert('Delete failed: '+(e && e.message)); }
+  };
+
+  const exportPrompt = (text, asMd=false) => {
+    const content = asMd ? (`# Prompt\n\n${text.replace(/`/g,'\\`')}`) : text;
+    const mime = asMd ? 'text/markdown;charset=utf-8' : 'text/plain;charset=utf-8';
+    const ext = asMd ? 'md' : 'txt';
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = `prompt.${ext}`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  };
+
+  const copyToClipboard = async (text) => {
+    try { await navigator.clipboard.writeText(text); const live = document.getElementById('copyLive'); if (live) { live.textContent = 'Copied to clipboard'; setTimeout(()=>{ live.textContent=''; },1200); } } catch(e){ alert('Copy failed'); }
+  };
 
       return (
         <div className="beyond-cards">
@@ -240,8 +326,21 @@
               )}
 
               {prompt && (
-                <div className="mt-6 card"><h4 className="card-title">Generated Prompt</h4><pre className="whitespace-pre-wrap">{prompt}</pre></div>
-              )}
+                    <div className="mt-6 card generated-prompt-container">
+                      <h4 className="card-title">Generated Prompt</h4>
+                      <div style={{display:'flex', alignItems:'center', gap:'0.75rem', marginBottom:'0.5rem'}}>
+                        <label style={{display:'flex', alignItems:'center', gap:'0.5rem'}}><input type="checkbox" checked={autoSaveEnabled} onChange={(e)=>setAutoSaveEnabled(e.target.checked)} /> Auto-save</label>
+                        <button className="button-outline" onClick={async ()=>{ await savePrompt(); }}>Save</button>
+                      </div>
+                      <div className="generated-prompt-actions" style={{display:'flex', gap:'0.5rem', alignItems:'center'}}>
+                        <button type="button" className="button-outline" onClick={() => { navigator.clipboard.writeText(prompt); const btn = document.getElementById('copyBtn'); if (btn) { btn.textContent = 'Copied!'; setTimeout(()=>btn.textContent='Copy',1200);} const live = document.getElementById('copyLive'); if (live) { live.textContent = 'Copied to clipboard'; setTimeout(()=>{ live.textContent = ''; }, 1200);} }} id="copyBtn" aria-label="Copy generated prompt">Copy</button>
+                        <button type="button" className="button-outline" onClick={() => { const blob = new Blob([prompt], {type:'text/plain;charset=utf-8'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'prompt.txt'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }} aria-label="Download prompt as TXT">Download .txt</button>
+                        <button type="button" className="button-outline" onClick={() => { const md = `# Prompt\n\n${prompt.replace(/`/g,'\\`')}`; const blob = new Blob([md], {type:'text/markdown;charset=utf-8'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'prompt.md'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }} aria-label="Download prompt as Markdown">Download .md</button>
+                      </div>
+                      <div id="copyLive" className="sr-only" aria-live="polite" aria-atomic="true"></div>
+                      <pre className="whitespace-pre-wrap generated-prompt" id="generatedPrompt">{prompt}</pre>
+                    </div>
+                  )}
             </form>
           </div>
 
@@ -251,6 +350,33 @@
             <div style={{marginTop:'1rem'}}>
               <h4 className="card-title">Example Input</h4>
               <p className="card-description">{activeFramework.exampleInput}</p>
+            </div>
+          </div>
+          
+          <div className="beyond-card" style={{minWidth:'320px'}}>
+            <h3 className="card-title">Saved Prompts</h3>
+            <div style={{marginBottom:'0.5rem'}}>
+              <button className="button-outline" type="button" onClick={fetchHistory}>Refresh</button>
+              <button className="button-outline" type="button" onClick={() => { localStorage.removeItem('prompt_session_id'); setSessionId(null); setHistory([]); }}>Reset Session</button>
+            </div>
+            <div style={{minHeight:'100px'}}>
+              {loadingHistory && <div>Loading...</div>}
+              {!loadingHistory && history.length === 0 && <div className="muted">No saved prompts yet.</div>}
+              {!loadingHistory && history.map(item => (
+                <div key={(item._id||item.id)} className="history-item" style={{borderTop:'1px solid var(--muted)', padding:'0.5rem 0'}}>
+                  <div style={{display:'flex', justifyContent:'space-between', alignItems:'baseline'}}>
+                    <div style={{fontSize:'0.9rem', fontWeight:600}}>{(item.framework||'Prompt')}</div>
+                    <div style={{fontSize:'0.85rem', color:'var(--muted)'}}>{new Date(item.createdAt).toLocaleString()}</div>
+                  </div>
+                  <pre className="whitespace-pre-wrap" style={{margin:'0.3rem 0', maxHeight:'6rem', overflow:'auto'}}>{item.promptText}</pre>
+                  <div style={{display:'flex', gap:'0.4rem', marginTop:'0.3rem'}}>
+                    <button className="button-outline" onClick={() => copyToClipboard(item.promptText)}>Copy</button>
+                    <button className="button-outline" onClick={() => exportPrompt(item.promptText,false)}>TXT</button>
+                    <button className="button-outline" onClick={() => exportPrompt(item.promptText,true)}>MD</button>
+                    <button className="button-outline" onClick={() => deletePrompt(item._id || item.id)}>Delete</button>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

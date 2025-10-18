@@ -9,6 +9,27 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
+// Simple JWT middleware to attach req.user when Authorization header present
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
+function jwtMiddleware(req, res, next) {
+  const auth = req.headers.authorization;
+  if (!auth) return next();
+  const parts = auth.split(' ');
+  if (parts.length !== 2) return next();
+  const scheme = parts[0];
+  const token = parts[1];
+  if (!/^Bearer$/i.test(scheme)) return next();
+  try {
+    const payload = jwt.verify(token, JWT_SECRET);
+    req.user = { id: payload.id, username: payload.username };
+  } catch (e) {
+    // ignore invalid token
+  }
+  return next();
+}
+app.use(jwtMiddleware);
+
 // Sanitize environment values: strip surrounding quotes if user accidentally wrapped them
 if (process.env.OPENAI_API_KEY) {
   const cleaned = process.env.OPENAI_API_KEY.replace(/^['"]|['"]$/g, '');
@@ -30,6 +51,16 @@ console.log('OPENAI configured:', !!process.env.OPENAI_API_KEY, 'OPENAI_MODEL:',
 
 // Serve static frontend (index.html in project root)
 app.use(express.static(path.join(__dirname)));
+
+// Mount routes (auth + prompts)
+try {
+  const authRoutes = require('./routes/auth');
+  const promptRoutes = require('./routes/prompts');
+  app.use('/api/auth', authRoutes);
+  app.use('/api/prompts', promptRoutes);
+} catch (e) {
+  console.warn('Could not mount auth/prompts routes:', e.message || e);
+}
 
 // Optional MongoDB connection (only if MONGO_URI provided)
 if (process.env.MONGO_URI) {
