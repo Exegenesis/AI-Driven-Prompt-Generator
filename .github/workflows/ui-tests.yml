@@ -2,9 +2,9 @@ name: UI Tests
 
 on:
   push:
-    branches: [ main, add/ui-tests ]
+    branches: [main, add/ui-tests]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   ui-tests:

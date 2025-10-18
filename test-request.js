@@ -2,12 +2,16 @@ const axios = require('axios');
 
 async function test() {
   try {
-    const res = await axios.post('http://localhost:3000/api/generate-prompt', {
-      goal: 'Write a product landing page',
-      audience: 'SaaS founders',
-      framework: 'R.C.C.O',
-      aiModel: 'GPT-4',
-    }, { timeout: 5000 });
+    const res = await axios.post(
+      'http://localhost:3000/api/generate-prompt',
+      {
+        goal: 'Write a product landing page',
+        audience: 'SaaS founders',
+        framework: 'R.C.C.O',
+        aiModel: 'GPT-4',
+      },
+      { timeout: 5000 }
+    );
 
     console.log('Response:', res.data);
   } catch (err) {

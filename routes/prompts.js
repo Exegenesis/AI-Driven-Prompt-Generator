@@ -9,12 +9,15 @@ const mongoose = require('mongoose');
 const inMemoryPrompts = [];
 
 function isDbConnected() {
-  try { return mongoose && mongoose.connection && mongoose.connection.readyState === 1; }
-  catch (e) { return false; }
+  try {
+    return mongoose && mongoose.connection && mongoose.connection.readyState === 1;
+  } catch (e) {
+    return false;
+  }
 }
 
 function makeId() {
-  return (Date.now().toString(36) + Math.random().toString(36).slice(2,9));
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 9);
 }
 
 // Simple JWT middleware (expects req.user to be set by an upstream middleware when present)
@@ -22,9 +25,15 @@ function requireAuthOrSession(req, res, next) {
   if (req.user) return next();
   // Allow anonymous with sessionId header or query param
   const sessionId = req.headers['x-session-id'] || req.query.session;
-  if (sessionId) { req.sessionId = sessionId; return next(); }
+  if (sessionId) {
+    req.sessionId = sessionId;
+    return next();
+  }
   return res.status(401).json({ error: 'Authentication required or provide session id' });
 }
+
+// Export helper for use in other modules/tests (keeps linter happy)
+module.exports.requireAuthOrSession = requireAuthOrSession;
 
 // POST /api/prompts
 router.post('/', async (req, res) => {
@@ -35,7 +44,12 @@ router.post('/', async (req, res) => {
       const doc = await Prompt.create({
         userId: req.user ? req.user.id : null,
         sessionId: req.sessionId || null,
-        framework, aiModel, goal, audience, promptText, meta
+        framework,
+        aiModel,
+        goal,
+        audience,
+        promptText,
+        meta,
       });
       return res.status(201).json(doc);
     }
@@ -51,7 +65,7 @@ router.post('/', async (req, res) => {
       audience: audience || null,
       promptText,
       meta: meta || null,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
     inMemoryPrompts.unshift(doc);
     // keep reasonable cap
@@ -81,13 +95,15 @@ router.get('/', async (req, res) => {
 
     // In-memory fetch
     if (req.user) {
-      const docs = inMemoryPrompts.filter(d => d.userId && String(d.userId) === String(req.user.id));
-      return res.json(docs.slice(0,200));
+      const docs = inMemoryPrompts.filter(
+        (d) => d.userId && String(d.userId) === String(req.user.id)
+      );
+      return res.json(docs.slice(0, 200));
     }
     const session = req.query.session || req.headers['x-session-id'];
     if (session) {
-      const docs = inMemoryPrompts.filter(d => d.sessionId === session);
-      return res.json(docs.slice(0,200));
+      const docs = inMemoryPrompts.filter((d) => d.sessionId === session);
+      return res.json(docs.slice(0, 200));
     }
     return res.status(400).json([]);
   } catch (err) {
@@ -109,20 +125,26 @@ router.delete('/:id', async (req, res) => {
         return res.status(204).send();
       }
       const session = req.headers['x-session-id'] || req.query.session;
-      if (session && doc.sessionId === session) { await doc.remove(); return res.status(204).send(); }
+      if (session && doc.sessionId === session) {
+        await doc.remove();
+        return res.status(204).send();
+      }
       return res.status(403).json({ error: 'Not allowed' });
     }
 
     // In-memory delete
-    const idx = inMemoryPrompts.findIndex(d => String(d._id) === String(id));
+    const idx = inMemoryPrompts.findIndex((d) => String(d._id) === String(id));
     if (idx === -1) return res.status(404).json({ error: 'Not found' });
     const doc = inMemoryPrompts[idx];
     if (req.user && String(doc.userId) === String(req.user.id)) {
-      inMemoryPrompts.splice(idx,1);
+      inMemoryPrompts.splice(idx, 1);
       return res.status(204).send();
     }
     const session = req.headers['x-session-id'] || req.query.session;
-    if (session && doc.sessionId === session) { inMemoryPrompts.splice(idx,1); return res.status(204).send(); }
+    if (session && doc.sessionId === session) {
+      inMemoryPrompts.splice(idx, 1);
+      return res.status(204).send();
+    }
     return res.status(403).json({ error: 'Not allowed' });
   } catch (err) {
     console.error('Delete failed', err);

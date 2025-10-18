@@ -9,7 +9,7 @@ const PromptSchema = new mongoose.Schema({
   audience: { type: String },
   promptText: { type: String },
   meta: { type: Object, default: {} },
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.models.Prompt || mongoose.model('Prompt', PromptSchema);
