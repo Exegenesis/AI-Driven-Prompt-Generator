@@ -3,6 +3,16 @@
 
 /* CSS Custom Properties for consistent theming */
 :root {
+    /* Map shared design-system tokens (from design-system/css/base-theme.css) to local names
+       This allows the project to continue using its existing variables while new projects
+       can rely on the shared tokens. */
+    --ds-bg: var(--bg);
+    --ds-panel: var(--panel);
+    --ds-muted: var(--muted);
+    --ds-accent: var(--accent);
+    --ds-text: var(--text);
+    --ds-card-border: var(--card-border);
+
     /* Light theme color palette */
     --primary-color: #2563eb;        /* Professional blue */
     --primary-hover: #1d4ed8;        /* Darker blue for hover */
@@ -279,16 +289,23 @@ section h2 {
 }
 
 .beyond-card {
-    background-color: var(--background-primary);
-    border-radius: var(--border-radius-lg);
-    padding: 1.5rem;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-color);
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    color: var(--ds-text, var(--text-primary));
+    border-radius: var(--card-radius, 12px);
+    padding: 1.25rem;
+    box-shadow: var(--shadow-md, 0 8px 20px rgba(3,7,18,0.6));
+    border: 1px solid var(--ds-card-border, rgba(255,255,255,0.04));
     width: 100%; /* ensure cards fill their grid column */
 }
 
 .card-title { font-size: 1.125rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-primary); }
 .card-description { color: var(--text-secondary); font-size: 0.95rem; }
+
+/* Projects-style visual parity */
+.beyond-cards { display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 420px)); gap:1rem; }
+.beyond-card.right { background: linear-gradient(180deg,#071226 0%,#081827 100%); }
+.history-item { background: rgba(255,255,255,0.02); padding:0.5rem; border-radius:8px; }
+.generated-prompt-container { background: rgba(255,255,255,0.02); border-left:4px solid rgba(255,159,28,0.14); }
 
 .form-group { margin-bottom: 0.75rem; }
 .form-label { display:block; margin-bottom:0.35rem; color: var(--text-secondary); font-size: 0.9rem; }
@@ -451,6 +468,10 @@ pre.whitespace-pre-wrap {
     white-space: nowrap !important;
     border: 0 !important;
 }
+
+/* Field error visual styles */
+.field-error { box-shadow: 0 0 0 3px rgba(239,68,68,0.08) inset; border-color: #ef4444 !important; }
+.field-error-text { color: #ef4444; font-size: 0.85rem; margin-top: 0.25rem; }
 
 
 
