@@ -34,3 +34,20 @@ Notes
 Next steps
 - Add authentication and prompt history storage in MongoDB.
 - Add unit tests and linting.
+
+CI and tests
+-----------
+
+This repository uses GitHub Actions to run unit tests on pull requests and pushes to `main`.
+
+- Run tests locally:
+
+```powershell
+npm install
+npm test
+```
+
+Changelog (recent)
+-------------------
+
+- 2025-10-18: Add theme toggle, design-system, Jest unit tests and CI workflow; update lockfile to fix CI installs.
