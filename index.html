@@ -421,5 +421,30 @@
   </script>
 
   <script src="js/main.js"></script>
+  <script>
+    (function(){
+      const toggle = document.getElementById('themeToggle');
+      if (!toggle) return;
+
+      const setTheme = (theme) => {
+        if (theme === 'dark') document.documentElement.setAttribute('data-theme','dark');
+        else document.documentElement.removeAttribute('data-theme');
+        // aria state
+        toggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+      };
+
+      // Initialize from localStorage or prefers-color-scheme
+      const saved = localStorage.getItem('exegenesis_theme');
+      if (saved) setTheme(saved);
+      else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) setTheme('dark');
+
+      toggle.addEventListener('click', () => {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const next = isDark ? 'light' : 'dark';
+        setTheme(next);
+        localStorage.setItem('exegenesis_theme', next);
+      });
+    })();
+  </script>
 </body>
 </html>
