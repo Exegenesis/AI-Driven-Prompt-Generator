@@ -303,8 +303,8 @@ body {
 
 /* Large headline with highlighted word */
 .hero-title {
-  font-size: 4rem;
-  line-height: 0.95;
+  font-size: 4.25rem;
+  line-height: 0.92;
   margin: 0 0 1rem 0;
   font-weight: 800;
   color: var(--text-primary);
@@ -313,8 +313,9 @@ body {
   display: inline-block;
   color: #06b6d4; /* cyan accent */
   font-weight: 900;
-  font-size: 4.5rem;
+  font-size: 4.75rem;
   margin-left: 0.25rem;
+  letter-spacing: -0.02em;
 }
 
 .hero-description {
