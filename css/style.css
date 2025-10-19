@@ -303,8 +303,8 @@ body {
 
 /* Large headline with highlighted word */
 .hero-title {
-  font-size: 4rem;
-  line-height: 0.95;
+  font-size: 4.25rem;
+  line-height: 0.92;
   margin: 0 0 1rem 0;
   font-weight: 800;
   color: var(--text-primary);
@@ -313,8 +313,9 @@ body {
   display: inline-block;
   color: #06b6d4; /* cyan accent */
   font-weight: 900;
-  font-size: 4.5rem;
+  font-size: 4.75rem;
   margin-left: 0.25rem;
+  letter-spacing: -0.02em;
 }
 
 .hero-description {
@@ -359,6 +360,28 @@ body {
 }
 .btn-primary:hover {
   transform: translateY(-3px);
+}
+
+/* Secondary button to sit beside primary in hero */
+.btn-secondary {
+  display: inline-block;
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid rgba(6,182,212,0.12);
+  padding: 0.8rem 1.1rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 700;
+}
+.btn-secondary:hover {
+  background: rgba(6,182,212,0.04);
+  transform: translateY(-2px);
+}
+
+/* accessible focus styles */
+.btn-primary:focus, .btn-secondary:focus, .cta-button:focus {
+  outline: 3px solid rgba(6,182,212,0.16);
+  outline-offset: 3px;
 }
 
 /* Radial decorative cards on the hero right side */
