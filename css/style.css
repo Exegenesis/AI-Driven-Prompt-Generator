@@ -362,6 +362,28 @@ body {
   transform: translateY(-3px);
 }
 
+/* Secondary button to sit beside primary in hero */
+.btn-secondary {
+  display: inline-block;
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid rgba(6,182,212,0.12);
+  padding: 0.8rem 1.1rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 700;
+}
+.btn-secondary:hover {
+  background: rgba(6,182,212,0.04);
+  transform: translateY(-2px);
+}
+
+/* accessible focus styles */
+.btn-primary:focus, .btn-secondary:focus, .cta-button:focus {
+  outline: 3px solid rgba(6,182,212,0.16);
+  outline-offset: 3px;
+}
+
 /* Radial decorative cards on the hero right side */
 .hero-figure {
   position: relative;
