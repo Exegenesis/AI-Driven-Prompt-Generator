@@ -62,25 +62,51 @@
     </header>
 
     <main class="light-main">
-      <section class="light-hero">
-        <div class="container">
-          <div class="hero-content">
-            <div class="hero-text">
-              <div class="hero-badge">PROMPT TOOL</div>
-              <h1 class="hero-title">AI Prompt <span class="highlight">Engineer</span></h1>
-              <p class="hero-description">
-                Build high-quality prompts for different models and use-cases. Fast, reusable, and
-                model-aware.
-              </p>
-              <div class="hero-buttons">
-                <a class="btn-primary" href="#">Get Started</a>
-              </div>
+        <section class="light-hero">
+            <div class="hero-background">
+                <div class="world-map-overlay"></div>
+                <div class="hero-figure">
+                    <div class="cyber-lock-container">
+                        <img src="assets/images/cyber-lock-hero.svg" alt="Cybersecurity Protection" class="cyber-lock-image">
+                    </div>
+                </div>
             </div>
-
-            <!-- hero-figure removed; form will be placed in a dedicated section below -->
-          </div>
-        </div>
-      </section>
+            
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <!-- keep project text content -->
+                        <div class="hero-badge">PROMPT TOOL</div>
+                        <h1 class="hero-title">AI Prompt <span class="highlight">Engineer</span></h1>
+                        <p class="hero-description">
+                          Build high-quality prompts for different models and use-cases. Fast, reusable, and
+                          model-aware.
+                        </p>
+                        <div class="hero-buttons">
+                            <!-- use the portfolio button structure but keep your button text -->
+                            <a href="contact.html" class="btn-primary">Get Started</a>
+                            <a href="portfolio.html" class="btn-secondary">View Portfolio</a>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-stats">
+                        <!-- map first three existing stat-cards into the portfolio layout; text preserved -->
+                        <div class="stat-card">
+                            <div class="stat-title">Achieve Peace of Mind</div>
+                            <div class="stat-description">Unlock the full power of AI with perfectly crafted prompts—transform your ideas into stunning results effortlessly!</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title">Precise and Effective Prompt Creation</div>
+                            <div class="stat-description">Our Prompt Generator ensures precise, effective prompts tailored to proven frameworks saving you time and frustration</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title">Ready to Use Prompt in 3 Steps</div>
+                            <div class="stat-description">Select a framework, fill in simple form fields with your details, and hit generate—get a ready-to-use prompt formatted just right for your favorite LLM</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
       <!-- 3-step intro: Create your prompt in 3 simple steps -->
       <section class="light-steps">
@@ -397,26 +423,41 @@
               <h3 className="card-title">Prompt Builder</h3>
               <form onSubmit={handleSubmit} className="cyber-form">
                 <div className="form-group">
-                  <label className="form-label">Framework</label>
-                  <select
-                    name="framework"
-                    value={formData.framework}
-                    onChange={handleChange}
-                    className="form-select"
-                  >
-                    <option>R.C.C.O</option>
-                    <option>C.A.R.E</option>
-                    <option>T.A.S.K</option>
-                  </select>
+                  <label className="form-label" htmlFor="frameworkSelect">Framework</label>
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <select
+                      id="frameworkSelect"
+                      name="framework"
+                      value={formData.framework}
+                      onChange={handleChange}
+                      className="form-select"
+                      aria-label="Prompt framework"
+                    >
+                      <option>R.C.C.O</option>
+                      <option>C.A.R.E</option>
+                      <option>T.A.S.K</option>
+                    </select>
+                    <button
+                      type="button"
+                      className="button-outline"
+                      onClick={() => setFormData((prev) => ({ ...prev, example: activeFramework.exampleInput }))}
+                      aria-label="Insert example input for selected framework"
+                      title="Insert example input"
+                    >
+                      Insert example
+                    </button>
+                  </div>
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">AI Model</label>
+                  <label className="form-label" htmlFor="aiModelSelect">AI Model</label>
                   <select
+                    id="aiModelSelect"
                     name="aiModel"
                     value={formData.aiModel}
                     onChange={handleChange}
                     className="form-select"
+                    aria-label="AI model"
                   >
                     <option>GPT-4</option>
                     <option>Claude</option>
@@ -795,7 +836,21 @@
                       aria-live="polite"
                       aria-atomic="true"
                     ></div>
-                    <pre className="whitespace-pre-wrap generated-prompt" id="generatedPrompt">
+                    <pre
+                      id="generatedPrompt"
+                      className="whitespace-pre-wrap generated-prompt"
+                      role="region"
+                      aria-label="Generated prompt"
+                      style={{
+                        maxHeight: '32rem',
+                        overflow: 'auto',
+                        whiteSpace: 'pre-wrap',
+                        wordBreak: 'break-word',
+                        padding: '1rem',
+                        background: 'var(--card-bg, #0b0b0b)',
+                        borderRadius: '6px',
+                      }}
+                    >
                       {prompt}
                     </pre>
                   </div>

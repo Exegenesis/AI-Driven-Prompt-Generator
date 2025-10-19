@@ -83,35 +83,88 @@
 
 /* Responsive: stack beyond-cards and tighten spacing for prompt generator */
 @media (max-width: 900px) {
-  .beyond-cards {
-    section h2 {
-      font-size: var(--font-size-3xl);
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: var(--spacing-xl);
-      text-align: center;
-    }
+  .radial-card {
+    position: absolute;
+    width: 420px; /* wider for multi-line content */
+    min-height: 160px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(6,182,212,0.06), rgba(6,182,212,0.02));
+    border: 1px solid rgba(255,255,255,0.04);
+    box-shadow: 0 12px 30px rgba(6,182,212,0.06);
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    color: var(--text-primary);
+    backdrop-filter: blur(6px);
+    padding: 1rem 1rem;
+  }
+  .radial-card .radial-card-inner {
+    font-weight: 600;
+    color: #e6fbff;
+    font-size: 1rem;
+    line-height: 1.45;
+    text-align: left;
+  }
+  /* Reposition cards for a balanced cluster */
+  .radial-card.card-1 { top: 6%; right: 42%; transform: translateZ(0); }
+  .radial-card.card-2 { top: 6%; right: 6%; transform: translateZ(0); }
+  .radial-card.card-3 { top: 40%; right: 48%; transform: translateZ(0); }
+  .radial-card.card-4 { top: 44%; right: 12%; transform: translateZ(0); }
 
-    /* Primary button used across the site */
-    .btn-primary {
-      display: inline-block;
-      background: linear-gradient(180deg, var(--primary-color), var(--primary-hover));
-      color: #fff;
-      padding: 0.7rem 1rem;
-      border-radius: 10px;
-      text-decoration: none;
-      font-weight: 700;
-      box-shadow: 0 10px 28px rgba(37, 99, 235, 0.12);
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-    }
+  /* Slightly reduce font on very long content to keep cards compact */
+  .radial-card .radial-card-inner {
+    max-height: 12.5rem;
+    overflow: hidden;
+  }
 
-    /* Slightly tighter nav link spacing */
-    .nav-link {
-      padding: 0.5rem 0.75rem;
-    }
-    padding: 1rem;
+  /* Hide decorative hero visuals on smaller screens */
+  @media (max-width: 1000px) {
+    .hero-figure,
+    .radial-cards,
+    .radial-card { display: none !important; }
+  }
+
+  /* Stat list: vertical column of cards placed in hero area */
+  .stat-list {
+    position: absolute;
+    right: 6%;
+    top: 6%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: 420px;
+    z-index: 2;
+  }
+  .stat-card {
+    background: linear-gradient(180deg, var(--background-primary), var(--background-accent));
+    border: 1px solid var(--border-color);
+    padding: 1rem 1.1rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+  }
+  .stat-title {
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 1.125rem;
+    margin-bottom: 0.25rem;
+  }
+  .stat-description {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.35;
+  }
+
+  @media (max-width: 1200px) {
+    .stat-list { right: 3%; width: 360px; }
+  }
+
+  @media (max-width: 900px) {
+    .stat-list { display: none; }
+  }
+
+  /* Slightly tighter nav link spacing */
+  .nav-link {
+    padding: 0.5rem 0.75rem;
   }
 
   .hero-title {
@@ -217,23 +270,180 @@ body {
   );
   padding: 100px 0 2.5rem;
   margin-top: 68px;
+  position: relative;
+  overflow: hidden;
 }
 
-.hero-content {
-  display: flex;
+/* Use a two-column grid for the hero content on wide screens to mirror portfolio layout */
+.light-hero .hero-content {
+  display: grid;
+  grid-template-columns: 480px 1fr;
+  gap: 2.5rem;
   align-items: center;
-  gap: 2rem;
+  position: relative;
+  z-index: 3;
 }
 .hero-text {
-  max-width: 720px;
+  max-width: 480px;
 }
+
+/* Badge pill */
+.hero-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(6,182,212,0.12), rgba(6,182,212,0.06));
+  color: var(--primary-color);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.75rem;
+  border: 1px solid rgba(6,182,212,0.14);
+}
+
+/* Large headline with highlighted word */
 .hero-title {
-  font-size: 2.25rem;
-  margin-bottom: 0.5rem;
+  font-size: 4rem;
+  line-height: 0.95;
+  margin: 0 0 1rem 0;
+  font-weight: 800;
+  color: var(--text-primary);
 }
+.hero-title .highlight {
+  display: inline-block;
+  color: #06b6d4; /* cyan accent */
+  font-weight: 900;
+  font-size: 4.5rem;
+  margin-left: 0.25rem;
+}
+
 .hero-description {
   color: var(--text-secondary);
-  font-size: 1rem;
+  font-size: 1.05rem;
+  margin-bottom: 1.25rem;
+}
+
+/* Right-side subtle radial glow / decorative circle to echo portfolio visual */
+.light-hero::after {
+  content: '';
+  position: absolute;
+  right: -8vw;
+  top: 10%;
+  width: 60vw;
+  height: 60vw;
+  max-width: 760px;
+  max-height: 760px;
+  background: radial-gradient(circle at 40% 40%, rgba(6,182,212,0.12) 0%, rgba(6,182,212,0.06) 8%, rgba(0,0,0,0) 30%);
+  filter: blur(30px);
+  pointer-events: none;
+  z-index: 0;
+  transform: translateZ(0);
+}
+
+/* Place hero text above decorative visuals */
+.light-hero .hero-text {
+  position: relative;
+  z-index: 2;
+}
+
+/* Button: primary style matching cyan accent and rounded pill */
+.btn-primary {
+  display: inline-block;
+  background: linear-gradient(180deg, #06b6d4, #0891b2);
+  color: #042029;
+  padding: 0.9rem 1.25rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 700;
+  box-shadow: 0 12px 28px rgba(6,182,212,0.12);
+}
+.btn-primary:hover {
+  transform: translateY(-3px);
+}
+
+/* Radial decorative cards on the hero right side */
+.hero-figure {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.radial-cards {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+}
+.radial-card {
+  position: absolute;
+  width: 320px;
+  height: 140px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(6,182,212,0.06), rgba(6,182,212,0.02));
+  border: 1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 12px 30px rgba(6,182,212,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  backdrop-filter: blur(6px);
+}
+.radial-card {
+  transform-origin: center right;
+  opacity: 0;
+  transform: translateX(20px) scale(0.98);
+  transition: transform 420ms cubic-bezier(.2,.9,.2,1), opacity 420ms ease, box-shadow 220ms ease;
+}
+
+/* entrance animation when page loads - add a short stagger via nth-child */
+.radial-cards .radial-card.card-1 { animation: radialIn 520ms ease forwards 80ms; }
+.radial-cards .radial-card.card-2 { animation: radialIn 520ms ease forwards 180ms; }
+.radial-cards .radial-card.card-3 { animation: radialIn 520ms ease forwards 260ms; }
+.radial-cards .radial-card.card-4 { animation: radialIn 520ms ease forwards 340ms; }
+
+@keyframes radialIn {
+  from { opacity: 0; transform: translateX(24px) scale(0.96); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+/* subtle hover lift */
+.radial-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 20px 48px rgba(6,182,212,0.12);
+}
+.radial-card .radial-card-inner {
+  font-weight: 700;
+  color: #06b6d4;
+}
+.radial-card.card-1 { top: 8%; right: 12%; transform: translateZ(0); }
+.radial-card.card-2 { top: 28%; right: 28%; transform: translateZ(0); }
+.radial-card.card-3 { top: 48%; right: 14%; transform: translateZ(0); }
+.radial-card.card-4 { top: 32%; right: -2%; transform: translateZ(0); }
+
+/* Make the prompt builder card visually prominent */
+.beyond-card.right {
+  border-radius: 16px;
+  padding: 1.5rem;
+  background: linear-gradient(180deg, rgba(10,18,28,0.85), rgba(8,18,27,0.7));
+  border: 1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 18px 48px rgba(2,6,23,0.6);
+  position: relative;
+  z-index: 3; /* sit above hero radial visuals */
+  transform: translateY(-20px);
+}
+
+/* Small visual pill in top-right of Prompt Builder to match attached sample */
+.beyond-card.right::before {
+  content: 'Featured';
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: linear-gradient(180deg, #f59e0b, #d97706);
+  color: #081226;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.8rem;
 }
 
 .hero-headline {

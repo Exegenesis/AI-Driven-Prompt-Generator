@@ -8,6 +8,28 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
+// Global handlers to surface any uncaught errors so they appear in logs/terminal
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception - server will exit. Error:');
+  console.error(err && err.stack ? err.stack : err);
+  // allow logs to flush then exit
+  try {
+    setTimeout(() => process.exit(1), 100);
+  } catch (e) {
+    process.exit(1);
+  }
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:');
+  console.error(reason && reason.stack ? reason.stack : reason);
+  try {
+    setTimeout(() => process.exit(1), 100);
+  } catch (e) {
+    process.exit(1);
+  }
+});
+
 // Simple JWT middleware to attach req.user when Authorization header present
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
